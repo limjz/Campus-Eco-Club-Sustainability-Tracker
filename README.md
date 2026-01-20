@@ -1,1 +1,0 @@
-# Campus-Eco-Club-Sustainability-Tracker
