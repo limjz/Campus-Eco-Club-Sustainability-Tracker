@@ -1,0 +1,16 @@
+<?php
+require 'db_connect.php';
+session_start();
+
+// Fetch only 'Open' events as per State Diagram [cite: 1706]
+$sql = "SELECT eventID, title, date, venue, eventStatus FROM Event WHERE eventStatus = 'Open'";
+$result = $conn->query($sql);
+
+$events = array();
+while($row = $result->fetch_assoc()) {
+    $events[] = $row;
+}
+
+echo json_encode($events);
+$conn->close();
+?>

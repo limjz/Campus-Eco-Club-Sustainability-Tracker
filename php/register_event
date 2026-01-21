@@ -1,0 +1,30 @@
+<?php
+require 'db_connect.php';
+session_start();
+
+$data = json_decode(file_get_contents("php://input"));
+
+if(isset($_SESSION['user_id']) && isset($data->event_id) && isset($data->role)) {
+    $studentID = $_SESSION['user_id'];
+    $eventID = $data->event_id;
+    $role = $data->role; // 'Participant' or 'Volunteer' [cite: 1201]
+
+    // Check if already registered
+    $check = $conn->query("SELECT * FROM Registration WHERE studentID = '$studentID' AND eventID = '$eventID'");
+    
+    if($check->num_rows > 0) {
+        echo json_encode(["status" => "error", "message" => "You are already registered!"]);
+    } else {
+        // Insert into Registration table defined in Component Design [cite: 1812]
+        $sql = "INSERT INTO Registration (studentID, eventID, role) VALUES ('$studentID', '$eventID', '$role')";
+        if($conn->query($sql) === TRUE) {
+            echo json_encode(["status" => "success", "message" => "Registered as " . $role]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Database error"]);
+        }
+    }
+} else {
+    echo json_encode(["status" => "error", "message" => "Invalid request"]);
+}
+$conn->close();
+?>

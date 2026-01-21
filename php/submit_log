@@ -1,0 +1,31 @@
+<?php
+require 'db_connect.php';
+session_start();
+
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $studentID = $_SESSION['user_id'];
+    $eventID = $_POST['event_id'];
+    $description = $_POST['description']; // Maps to recyclingCategory or details
+    $weight = $_POST['weight']; // Required by Data Dictionary 
+
+    // Handle Photo Upload
+    $target_dir = "../uploads/";
+    $file_name = time() . basename($_FILES["evidence"]["name"]);
+    $target_file = $target_dir . $file_name;
+
+    if (move_uploaded_file($_FILES["evidence"]["tmp_name"], $target_file)) {
+        // Log Status defaults to 'Pending' [cite: 1944]
+        $sql = "INSERT INTO Logs (studentID, eventID, weight, photoEvidence, logStatus, description) 
+                VALUES ('$studentID', '$eventID', '$weight', '$target_file', 'Pending', '$description')";
+        
+        if($conn->query($sql) === TRUE) {
+            echo json_encode(["status" => "success", "message" => "Log submitted for review."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Database Error"]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "File upload failed."]);
+    }
+}
+$conn->close();
+?>
