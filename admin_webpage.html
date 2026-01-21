@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal - Eco-Club</title>
+  <link rel="stylesheet" href="admin_style.css" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">🌿</div>
+      <div>
+        <h2>Eco-Club</h2>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+
+    <ul class="menu">
+      <li class="active" onclick="showSection('dashboard')">Dashboard</li>
+      <li onclick="showSection('logs')">Review Logs <span id="badgeLogs" class="badge">0</span></li>
+      <li onclick="showSection('proposals')">Review Proposals <span id="badgeProposals" class="badge">0</span></li>
+      <li onclick="showSection('stats')">Statistics</li>
+      <li onclick="showSection('notifications')">Notifications</li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="admin-chip">
+        <div class="avatar">A</div>
+        <div>
+          <b>Admin Ilie</b>
+          <small>Administrator</small>
+        </div>
+      </div>
+      <button class="btn-outline" onclick="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageDesc">Overview</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn-primary" onclick="showSection('notifications')">Send Notification</button>
+      </div>
+    </header>
+
+    <!-- Sections -->
+    <section id="dashboard" class="section active-section">
+      <div class="cards">
+        <div class="card">
+          <h3>Total Events</h3>
+          <p id="kpiEvents">0</p>
+        </div>
+        <div class="card">
+          <h3>Pending Logs</h3>
+          <p id="kpiPendingLogs">0</p>
+        </div>
+        <div class="card">
+          <h3>Pending Proposals</h3>
+          <p id="kpiPendingProposals">0</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Quick Actions</h3>
+        <div class="row">
+          <button class="btn-primary" onclick="showSection('logs')">Review Logs</button>
+          <button class="btn-primary" onclick="showSection('proposals')">Review Proposals</button>
+          <button class="btn-primary" onclick="showSection('stats')">View Statistics</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="logs" class="section">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Review Logs</h3>
+            <p class="muted">Approve or reject student logs</p>
+          </div>
+
+          <div class="panel-controls">
+            <input id="logSearch" type="text" placeholder="Search logID / student / event..." oninput="renderLogs()" />
+            <select id="logFilter" onchange="renderLogs()">
+              <option value="Pending" selected>Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="All">All</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Log ID</th>
+              <th>Student</th>
+              <th>Event</th>
+              <th>Weight (KG)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="proposals" class="section">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Review Proposals</h3>
+            <p class="muted">Approve or reject event proposals</p>
+          </div>
+
+          <div class="panel-controls">
+            <input id="proposalSearch" type="text" placeholder="Search proposalID / title / organiser..." oninput="renderProposals()" />
+            <select id="proposalFilter" onchange="renderProposals()">
+              <option value="Pending" selected>Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="All">All</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Proposal ID</th>
+              <th>Title</th>
+              <th>Organiser</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="proposalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="stats" class="section">
+      <div class="panel">
+        <h3>Overall Statistics (Simple)</h3>
+        <div class="cards">
+          <div class="card">
+            <h3>Total Logs</h3>
+            <p id="statTotalLogs">0</p>
+          </div>
+          <div class="card">
+            <h3>Approved Logs</h3>
+            <p id="statApprovedLogs">0</p>
+          </div>
+          <div class="card">
+            <h3>Total Approved (KG)</h3>
+            <p id="statApprovedKg">0</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top:18px;">Top Contributors</h3>
+        <ul id="leaderboard" class="leaderboard"></ul>
+      </div>
+    </section>
+
+    <section id="notifications" class="section">
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Inbox</h3>
+              <p class="muted">Latest messages</p>
+            </div>
+            <input id="notifSearch" type="text" placeholder="Search inbox..." oninput="renderNotifications()" />
+          </div>
+
+          <div id="notifList" class="notif-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Send Notification</h3>
+          <form onsubmit="sendNotification(event)">
+            <label>Target</label>
+            <select id="notifTarget">
+              <option>All Users</option>
+              <option>Students Only</option>
+              <option>Volunteers Only</option>
+              <option>Organisers Only</option>
+            </select>
+
+            <label>Title</label>
+            <input id="notifTitle" type="text" required placeholder="Subject" />
+
+            <label>Message</label>
+            <textarea id="notifMsg" rows="5" required placeholder="Type your message..."></textarea>
+
+            <button class="btn-primary" type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden" onclick="backdropClose(event)">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <div>
+          <h3 id="modalTitle">Details</h3>
+          <p id="modalSub" class="modal-sub">Information</p>
+        </div>
+        <button class="icon-close" type="button" onclick="closeModal()">✕</button>
+      </div>
+
+      <div id="modalBody" class="modal-body"></div>
+
+      <div class="modal-foot">
+        <button class="btn-outline" type="button" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
