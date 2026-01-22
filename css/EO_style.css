@@ -1,117 +1,301 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+/* --- BRAND BOARD / MOODBOARD STYLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap');
 
-body { display: flex; height: 100vh; background-color: #f4f7f6; }
-
-/* Sidebar */
-.sidebar {
-    width: 300px;
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
+:root {
+    /* Core Palette */
+    --primary-green: #4ca626;
+    --light-green: #a6ce40;
+    --earth-brown: #ad8364;
+    --accent-orange: #ffa51f;
+    --sky-blue: #70cbff;
+    
+    /* Neutrals */
+    --text-dark: #333333;
+    --text-light: #777777;
+    --bg-light: #f9fbf9; /* Very light tint of green/grey */
+    --white: #ffffff;
+    --sidebar-bg: #ffffff;
+    --border-color: #eee;
 }
-.sidebar h2 { margin-bottom: 30px; font-size: 1.2rem; text-align: center;}
-/* remove bullet  */
-.sidebar ul { list-style: none; }
-.sidebar li {
-    padding: 15px;
-    cursor: pointer;
-    border-radius: 5px;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    overflow: hidden; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary-green);
+}
+
+/* --- LOGIN PAGE STYLES --- */
+body.login-page {
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(76,166,38,0.1) 0%, rgba(112,203,255,0.1) 100%);
+}
+
+.login-card {
+    background: var(--white);
+    padding: 50px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 20px; /* Softer corners */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    text-align: center;
+    border-top: none; /* Removed the hard border for a cleaner look */
+}
+
+.login-header { margin-bottom: 30px; }
+.login-header h2 { color: var(--primary-green); font-size: 1.8rem; }
+.login-header p { color: var(--text-light); font-size: 0.9rem; }
+
+/* Input Styling with Icons */
+.input-wrapper { position: relative; }
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--earth-brown); /* Using brand color for icons */
+}
+
+.login-card input[type="text"], 
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 12px; /* Matching the moodboard radius */
+    font-family: 'Montserrat', sans-serif;
     transition: 0.3s;
-    margin-bottom: 5px;
+    background-color: #fafafa;
 }
-.sidebar li:hover, .sidebar li.active { background-color: #1abc9c; }
-.sidebar i { margin-right: 10px; width: 20px; }
 
-/* Main Content */
+.login-card input:focus {
+    border-color: var(--primary-green);
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 166, 38, 0.1);
+}
+
+.login-card button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+}
+
+.footer-link { margin-top: 25px; font-size: 0.8rem; color: var(--text-light); }
+
+
+/* --- SIDEBAR (Updated to Moodboard Style) --- */
+.sidebar {
+    width: 280px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    color: var(--text-dark);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    color: var(--primary-green);
+    text-align: left; /* Aligned left like the original design */
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar ul { list-style: none; }
+
+.sidebar li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 12px; /* Softer radius */
+    transition: 0.3s;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+}
+
+.sidebar li i { margin-right: 15px; width: 20px; text-align: center; }
+
+/* Active State - Soft Green Background */
+.sidebar li:hover, .sidebar li.active {
+    background-color: rgba(76, 166, 38, 0.1); /* Light green tint */
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+
+/* --- MAIN CONTENT --- */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 40px;
     overflow-y: auto;
 }
 
-.section { display: none; }
-.active-section { display: block; animation: fadeIn 0.5s; }
+.section { display: none; animation: fadeIn 0.4s ease-in-out; }
+.active-section { display: block; }
 
-header { margin-bottom: 25px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-h1 { color: #34495e; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cards */
-.cards-container { display: flex; gap: 20px; }
+header { 
+    margin-bottom: 30px; 
+    border-bottom: none; /* Cleaner look */
+    padding-bottom: 0; 
+}
+h1 { color: var(--text-dark); font-size: 1.8rem; }
+header p { color: var(--text-light); }
+
+
+/* --- CARDS --- */
+.cards-container { display: flex; gap: 25px; flex-wrap: wrap; }
+
 .card {
-    background: white;
-    padding: 20px;
+    background: var(--white);
+    padding: 25px;
     flex: 1;
-    border-radius: 8px;
-    /*box-shadow: 0 2px 5px rgba(0,0,0,0.1);*/
-    /*border-left: 5px solid #1abc9c;*/
+    min-width: 250px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    border-left-width: 5px !important; /* Keep the colored left border logic from inline styles */
 }
 
-/* Forms & Panels */
+/* --- FORMS & PANELS --- */
 .panel {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
 }
-.form-group { margin-bottom: 15px; }
 
+.form-group { margin-bottom: 20px; }
 .form-row { display: flex; gap: 20px; }
 .form-row .form-group { flex: 1; }
 
-label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    color: var(--text-dark); 
+}
+
 input, select, textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-/* button */
-.btn-primary {
-    background-color: #A6CE40;
-    color: black;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-.btn-primary:hover { background-color: #708D25; }
-
-/* Tables */
-.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-.data-table th, .data-table td {
     padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-dark);
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
 }
 
-.status-rejected {color: red; font-weight: bold;}
-.status-pending { color: orange; font-weight: bold; }
-.status-approved { color: green; font-weight: bold; }
 
-/* Task Grid */
-.task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
-.volunteer-card {
-    border: 1px solid #eee;
+/* --- BUTTONS (Pill Shape) --- */
+.btn-primary {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    padding: 10px 25px;
+    cursor: pointer;
+    border-radius: 30px; /* Pill shape */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(76, 166, 38, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--light-green);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 166, 38, 0.3);
+}
+
+/* --- TABLES --- */
+.data-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0 10px; /* Row spacing */
+    margin-top: 10px; 
+}
+
+.data-table th {
     padding: 15px;
-    border-radius: 5px;
-    background: #fafafa;
+    text-align: left;
+    color: var(--text-light);
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
 }
-.task-input-group { display: flex; margin-top: 10px; gap: 5px; }
 
-/* Notifications */
-.two-col-layout { display: flex; gap: 20px; }
-.two-col-layout > div { flex: 1; }
+.data-table td {
+    padding: 15px;
+    background-color: var(--white);
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+.data-table td:first-child { border-left: 1px solid #eee; border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.data-table td:last-child { border-right: 1px solid #eee; border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+/* Status Badges */
+.status-rejected { color: #ff6b6b; font-weight: 600; background: #fff0f0; padding: 5px 10px; border-radius: 8px; }
+.status-pending { color: var(--accent-orange); font-weight: 600; background: #fff8e6; padding: 5px 10px; border-radius: 8px; }
+.status-approved { color: var(--primary-green); font-weight: 600; background: #eaffea; padding: 5px 10px; border-radius: 8px; }
+
+
+/* --- NOTIFICATIONS & TASKS --- */
 .notif-list { list-style: none; }
 .notif-item {
-    padding: 15px;
+    padding: 20px;
     border-bottom: 1px solid #eee;
+    transition: 0.3s;
 }
-.notif-item.unread { background-color: #e8f8f5; border-left: 3px solid #1abc9c; }
-.time { font-size: 0.8rem; color: #888; display: block; margin-top: 5px; }
+.notif-item:last-child { border-bottom: none; }
 
-.chart-panel { max-width: 600px; margin: 0 auto; }
+.notif-item.unread {
+    background-color: #f0f9ff; /* Light Blue tint */
+    border-left: 4px solid var(--sky-blue);
+    border-radius: 4px;
+}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.time { font-size: 0.8rem; color: var(--text-light); margin-top: 5px; display: block; }
+
+.task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.volunteer-card {
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    background: var(--white);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border-left: 4px solid var(--earth-brown);
+}
+
+.task-input-group { 
+    display: flex; 
+    align-items: center; 
+    margin-top: 15px; 
+    gap: 10px; 
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
