@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 $student_id = $_SESSION['user_id']; //login id 
 
 
-include 'php/get_student_statistic.php';
+include 'php/StudentController/get_student_statistic.php';
 
 ?>
 
@@ -40,13 +40,13 @@ include 'php/get_student_statistic.php';
                 <i class="fas fa-calendar-plus"></i> Register Event
             </li>
             <li onclick="showSection('logs')" id="nav-logs"> 
-                <i class="fas fa-edit"></i> Participant 
+                <i class="fas fa-edit"></i> Submit Logs
             </li>
             <li onclick="showSection('history')" id="nav-history"> 
-                <i class="fas fa-edit"></i> View Logs History 
+                <i class="fas fa-history"></i> My Logs History 
             </li>
             <li onclick="showSection('tasks')" id="nav-tasks"> 
-                <i class="fas fa-tasks"></i> Volunteer 
+                <i class="fas fa-tasks"></i> My tasks 
             </li>
             <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> 
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -82,7 +82,7 @@ include 'php/get_student_statistic.php';
                 <h3>🏆 Top Recyclers</h3>
                 <ul class="leaderboard-list">
                     <!-- the display code dy in the php -->
-                    <?php include 'php/get_leaderboard.php'; ?>
+                    <?php include 'php/StudentController/get_leaderboard.php'; ?>
                 </ul>
             </div>
 
@@ -90,7 +90,7 @@ include 'php/get_student_statistic.php';
         </div>
 
         <div id="notifications" class="section">
-            <h2>🔔 Your Notifications</h2>
+            <h2>Your Notifications</h2>
             <div class="panel">
                 <ul class="notif-list" id="notificationListBody">
                     <li class="notif-item unread">
@@ -109,7 +109,7 @@ include 'php/get_student_statistic.php';
         </div>
 
         <div id="register" class="section">
-            <h2>📢 Upcoming Events</h2>
+            <h2>Upcoming Events</h2>
             <p>Select an event to join as a participant or volunteer.</p>
             <table class="data-table">
                 <thead>
@@ -126,7 +126,7 @@ include 'php/get_student_statistic.php';
         </div>
 
         <div id="logs" class="section">
-            <h2>📝 Submit Activity Log</h2>
+            <h2>Submit Activity Log</h2>
             <div class="panel">
                 <form id="logForm" onsubmit="submitLog(event)" enctype="multipart/form-data">
                     
@@ -177,7 +177,7 @@ include 'php/get_student_statistic.php';
         </div>
 
         <div id="tasks" class="section">
-            <h2>👷 My Volunteer Tasks</h2>
+            <h2>My Volunteer Tasks</h2>
             <p>Check tasks assigned to you by the Event Organizer.</p>
             
             <div class="form-group">

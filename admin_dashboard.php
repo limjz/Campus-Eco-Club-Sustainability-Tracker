@@ -23,13 +23,24 @@ $total_recycling = 1250.5; // kg
 
 <body>
 
-    <div class="sidebar" style="background: #1a252f;"> <h2>EcoClub Admin</h2>
+    <div class="sidebar" style="background: #1a252f;"> 
+        <h2><i class="fas fa-leaf"></i> Campus Eco-Club Sustainability Tracker</h2>
         <ul>
-            <li onclick="showSection('dashboard')" class="active"> <i class="fas fa-tachometer-alt"></i> Overview</li>
-            <li onclick="showSection('proposals')"> <i class="fas fa-file-contract"></i> Review Proposals</li>
-            <li onclick="showSection('logs')"> <i class="fas fa-check-circle"></i> Review Logs</li>
-            <li onclick="showSection('statistics')"> <i class="fas fa-chart-bar"></i> Overall Stats</li>
-            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> <i class="fas fa-sign-out-alt"></i> Logout</li>
+            <li onclick="showSection('dashboard')" class="active"> 
+                <i class="fas fa-home"> </i> Dashboard
+            </li>
+            <li onclick="showSection('proposals')"> 
+                <i class="fas fa-file-contract"></i> Review Proposals
+            </li>
+            <li onclick="showSection('logs')"> 
+                <i class="fas fa-check-circle"></i> Review Logs
+            </li>
+            <li onclick="showSection('statistics')"> 
+                <i class="fas fa-chart-bar"></i> Overall Stats
+            </li>
+            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> 
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
         </ul>
     </div>
 

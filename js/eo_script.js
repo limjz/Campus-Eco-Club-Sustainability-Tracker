@@ -32,7 +32,9 @@ function loadProposals ()
             const row = `<tr>
                 <td>${prop.title}</td>
                 <td>${prop.event_date}</td>
-                <td class="status-${prop.status.toLowerCase()}">${prop.status}</td>
+                <td><span class="status-${prop.status.toLowerCase().trim()}">
+                    ${prop.status}
+                </span></td>
                 <td>
                     <button class="btn-primary" style="padding:5px 10px;">View</button>
                 </td>

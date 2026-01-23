@@ -59,7 +59,7 @@ function loadAvailableEvents() {
     const tbody = document.getElementById('eventListBody');
     tbody.innerHTML = "<tr><td colspan='4'>Loading open events...</td></tr>"; //loading text if thers no data show up
 
-    fetch('php/get_open_events.php')
+    fetch('php/StudentController/get_open_events.php')
     .then(response => response.json())
     .then(data => {
         tbody.innerHTML = ""; //clear the loading text, page is empty now 
@@ -98,7 +98,7 @@ function registerForEvent(eventID, role) {
         return;
     }
 
-    fetch('php/register_event.php', {
+    fetch('php/StudentController/register_event.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -128,7 +128,7 @@ function submitLog(e) {
     const form = document.getElementById('logForm');
     const formData = new FormData(form); // object for files 
 
-    fetch('php/submit_log.php', {
+    fetch('php/StudentController/submit_log.php', {
         method: 'POST',
         body: formData // no headers needed, FormData will handles automatically 
     })
@@ -151,7 +151,7 @@ function loadMyLogs() {
 
     tbody.innerHTML = "<tr><td colspan='6'>Loading data...</td></tr>";
 
-    fetch('php/get_student_logs.php')
+    fetch('php/StudentController/get_student_logs.php')
     .then(res => res.json())
     .then(data => {
         tbody.innerHTML = ""; 
@@ -197,27 +197,35 @@ function loadMyLogs() {
 
 // Load Registered Events for Dropdown
 function loadRegisteredEvents() {
-    // Select both dropdowns
-    const select = document.getElementById('logEventSelect');
-    //const taskSelect = document.getElementById('taskEventSelect');
 
-    select.innerHTML = "<option>Loading...</option>"; 
-
-    fetch('php/get_registration.php')
+    fetch('php/StudentController/get_registration.php')
     .then(response => response.json())
     .then(data => {
-        console.log("PHP Sent This:", data); // <--- ADD THIS LINE
 
-        // Reset Dropdowns
-        select.innerHTML = "<option value=''>Select Event...</option>";
-        
+        // Select both dropdowns
+        const logSelect = document.getElementById('logEventSelect');
+        const taskSelect = document.getElementById('taskEventSelect');
+
+        let option = '<option value="">-- Select Event --</option>';
+
         if(data.length === 0) {
-            select.innerHTML = "<option value=''>No registered events found</option>";
-        } else {
+            option = "<option value=''>No registered events found</option>";
+        } else 
+        {
             data.forEach(event => {
                 
-                select.innerHTML += `<option value="${event.event_id}"> ${event.title} </option>`;
+                option += `<option value="${event.event_id}"> ${event.title} </option>`;
             });
+        }
+
+        if (logSelect) 
+        {
+            logSelect.innerHTML = option;
+        }
+            
+        if (taskSelect) 
+        {
+            taskSelect.innerHTML = option;
         }
     })
 }
@@ -228,7 +236,7 @@ function loadNotifications() {
     const list = document.getElementById('notificationListBody');
     list.innerHTML = "<li class='notif-item'>Loading...</li>";
 
-    fetch('php/get_notification.php')
+    fetch('php/StudentController/get_notification.php')
     .then(response => response.json())
     .then(data => {
         list.innerHTML = "";
@@ -261,31 +269,53 @@ function loadNotifications() {
 }
 
 
-
-
-// Load Tasks (Updated to use dynamic event ID)
+// Load Tasks
 function loadMyTasks() {
-    const eventId = document.getElementById('taskEventSelect').value;
-    const display = document.getElementById('myTaskDisplay');
+    const eventSelect = document.getElementById('taskEventSelect');
+    const eventId = eventSelect.value;
+    const container = document.getElementById('myTaskDisplay');
 
-    if (eventId) {
-        // In a real app, you would fetch tasks from DB based on Event ID
-        // fetch('php/get_tasks.php?event_id=' + eventId)...
-        
-        // Simulating response for UI demo
-        display.innerHTML = `
-            <h3>Your Tasks for this Event</h3>
-            <div class="task-grid">
-                <div class="volunteer-card">
-                    <h4><i class="fas fa-check-circle"></i> Setup</h4>
-                    <p>Ensure bins are labeled correctly.</p>
-                    <div class="task-input-group">
-                        <input type="checkbox"> <span>Mark Complete</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    } else {
-        display.innerHTML = "<p>Please select an event to see your tasks.</p>";
+    if (!eventId) {
+        container.innerHTML = "<p><i>Select an event to view your assigned tasks...</i></p>";
+        return;
     }
+
+    container.innerHTML = "<p>Loading tasks...</p>";
+
+    fetch(`php/StudentController/get_volunteer_task.php?event_id=${eventId}`)
+    .then(response => response.json()) 
+    .then(data => {
+        container.innerHTML = ""; 
+
+        if (data.length === 0) { // no data found in the table 
+            container.innerHTML = "<p>No tasks assigned for this event yet.</p>";
+            return;
+        }
+
+
+        data.forEach(task => {
+            const html = `
+            <div class="task-card">
+                <div class="task-header">
+                    <strong><i class="fas fa-thumbtack"></i> Task Assigned</strong>
+                </div>
+                <p class="task-desc">${task.task_description}</p>
+            </div>`;
+            container.innerHTML += html;
+        });
+    })
+    .catch(err => {
+        //error handling
+        console.error("Task load error:", err);
+        container.innerHTML = "<p style='color:red'>Unable to load tasks. Please try again later.</p>";
+    });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    //default tab 
+    showSection('dashboard');
+    loadMyLogs (); 
+    loadMyTasks (); 
+
+    loadRegisteredEvents(); 
+});

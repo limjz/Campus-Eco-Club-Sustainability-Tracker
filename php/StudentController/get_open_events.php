@@ -1,5 +1,5 @@
 <?php
-include 'db_connect.php'; 
+include __DIR__ . '/../db_connect.php';
 header('Content-Type: application/json');
 
 $sql = "SELECT event_id, title, event_date, venue FROM events WHERE status = 'open' ORDER BY event_date ASC";

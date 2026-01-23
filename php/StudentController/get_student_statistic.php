@@ -1,5 +1,5 @@
 <?php 
-include_once 'db_connect.php';
+include_once __DIR__ . '/../db_connect.php';
 
 if (!isset($student_id)) {
     $student_id = $_SESSION['user_id'];

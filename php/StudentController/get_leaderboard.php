@@ -1,6 +1,6 @@
 <?php 
 
-include 'db_connect.php'; 
+include __DIR__ . '/../db_connect.php';
 
 // sum the points for each students, combine logs and user table to get names
 // sort flw the top 5 total points 

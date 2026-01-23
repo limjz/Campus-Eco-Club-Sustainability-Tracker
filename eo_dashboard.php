@@ -2,6 +2,20 @@
 // 1. SECURITY (PHP Logic)// check if the username is correct onot 
 $require_role = "eo";
 include 'php/session_check.php'; 
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'eo') {
+    header("Location: login.html"); 
+    exit();
+}
+
+$eo_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+
+// Dummy stats for now (Replace with real SQL later)
+$active_events = 3;
+$pending_logs = 8;
+$total_participants = 45;
+
 ?>
 
 
@@ -25,12 +39,25 @@ include 'php/session_check.php';
     <div class="sidebar">
         <h2><i class="fas fa-leaf"></i> Campus Eco-Club Sustainability Tracker</h2>
         <ul>
-            <li onclick="showSection('dashboard')" class="active"> <i class="fas fa-home"> </i> Dashboard</li>
-            <li onclick="showSection('proposals')"> <i class="fas fa-file-signature"> </i> Proposals</li>
-            <li onclick="showSection('volunteers')">  <i class="fas fa-tasks"> </i> Participants Management</li>
+            <li onclick="showSection('dashboard')" class="active"> 
+                <i class="fas fa-home"> </i> Dashboard
+            </li>
+            <li onclick="showSection('proposals')"> 
+                <i class="fas fa-file-signature"> </i> Proposals
+            </li>
+            <li onclick="showSection('volunteers')">  
+                <i class="fas fa-tasks"> </i> Task & Instruction Management
+            </li>
             <!-- <li onclick="showSection('management')"> <i class="fas fa-tasks"> </i> Event Tasks</li> -->
-            <li onclick="showSection('statistics')"> <i class="fas fa-chart-pie"> </i> Recycling Stats</li>
-            <li onclick="showSection('notifications')"> <i class="fas fa-bell"> </i> Notifications</li>
+            <li onclick="showSection('statistics')"> 
+                <i class="fas fa-chart-pie"> </i> Recycling Stats
+            </li>
+            <li onclick="showSection('notifications')">
+                 <i class="fas fa-bell"> </i> Notifications
+            </li>
+            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> 
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
         </ul>
     </div>
 
@@ -42,17 +69,17 @@ include 'php/session_check.php';
                 <p>Overview of your active eco-activities.</p>
             </header>
             <div class="cards-container">
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Active Events</h3>
-                    <p>3 Ongoing</p>
+                    <p class = "number_card"><?php echo $active_events; ?> </p>
                 </div>
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Pending Proposals</h3>
-                    <p>2 Under Review</p>
+                    <p class = "number_card"><?php echo $pending_logs; ?> </p>
                 </div>
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Volunteers</h3>
-                    <p>12 Active</p>
+                    <p class = "number_card"><?php echo $total_participants; ?></p>
                 </div>
             </div>
         </div>
@@ -134,7 +161,10 @@ include 'php/session_check.php';
         </div> -->
 
         <div id="volunteers" class = "section"> 
-            <h2>Participants Management </h2>
+            <header>
+                <h1>Task & Instruction Management</h1>
+            </header>
+            
 
             <!-- option selector -->
             <div style = "margin-bottom: 20px;"> 
@@ -169,7 +199,7 @@ include 'php/session_check.php';
 
         <div id="statistics" class="section">
             <header>
-                <h1>Recycling Statistics</h1>
+                <h1>Event Recycling Statistics</h1>
             </header>
             
             <div class="form-group">
