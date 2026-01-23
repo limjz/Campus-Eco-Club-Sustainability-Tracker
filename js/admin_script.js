@@ -1,76 +1,115 @@
-// js/admin_function.js
-
-// 1. Navigation Logic
+// 1) Navigation
 function showSection(sectionId) {
-    const sections = document.querySelectorAll('.section');
-    sections.forEach(sec => sec.classList.remove('active-section'));
-    document.getElementById(sectionId).classList.add('active-section');
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active-section"));
+  document.getElementById(sectionId).classList.add("active-section");
 
-    // If Stats tab is opened, load the chart
-    if(sectionId === 'statistics') {
-        loadAdminChart();
-    }
+  // sidebar active highlight
+  document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
+  const active = Array.from(document.querySelectorAll(".sidebar ul li"))
+    .find(li => (li.getAttribute("onclick") || "").includes(sectionId));
+  if (active) active.classList.add("active");
+
+  // load chart only when stats page opens
+  if (sectionId === "statistics") loadAdminChart();
+
+  // update dashboard counts based on current pending rows
+  updateDashboardCounts();
 }
 
-// 2. Proposal Functions (Simulated)
-function approveProposal(id) {
-    if(confirm("Are you sure you want to APPROVE this event?")) {
-        // DATABASE CONNECT HERE: 
-        // fetch('php/approve_proposal.php', { method: 'POST', body: JSON.stringify({id: id}) })
-        
-        // Remove row from table visually
-        document.getElementById(`prop-${id}`).remove();
-        alert("Event Approved! It is now visible to students.");
+// 2) Dashboard counts (based on table rows)
+function updateDashboardCounts() {
+  const propCount = document.querySelectorAll("#proposalTableBody tr").length;
+  const logCount = document.querySelectorAll("#logsTableBody tr").length;
+
+  // update cards (uses the same titles from your HTML)
+  setCardValue("Pending Proposals", propCount);
+  setCardValue("Pending Logs", logCount);
+}
+
+function setCardValue(cardTitle, value) {
+  document.querySelectorAll(".cards-container .card").forEach(card => {
+    const h3 = card.querySelector("h3");
+    const p = card.querySelector("p");
+    if (!h3 || !p) return;
+
+    if (h3.innerText.trim().toLowerCase() === cardTitle.toLowerCase()) {
+      // keep "kg" if exists
+      const hasKg = p.innerText.toLowerCase().includes("kg");
+      p.innerText = hasKg ? `${value} kg` : value;
     }
+  });
+}
+
+// 3) Proposal approve/reject (simulated)
+function approveProposal(id) {
+  if (!confirm("Approve this event proposal?")) return;
+
+  // DATABASE CONNECT HERE:
+  // fetch('php/approve_proposal.php', { method:'POST', body: JSON.stringify({id}) })
+
+  const row = document.getElementById(`prop-${id}`);
+  if (row) row.remove();
+
+  updateDashboardCounts();
+  alert("Event Approved!");
 }
 
 function rejectProposal(id) {
-    if(confirm("Reject this proposal?")) {
-        // DATABASE CONNECT HERE: fetch('php/reject_proposal.php' ...)
-        document.getElementById(`prop-${id}`).remove();
-    }
+  if (!confirm("Reject this event proposal?")) return;
+
+  // DATABASE CONNECT HERE:
+  // fetch('php/reject_proposal.php', { method:'POST', body: JSON.stringify({id}) })
+
+  const row = document.getElementById(`prop-${id}`);
+  if (row) row.remove();
+
+  updateDashboardCounts();
+  alert("Proposal Rejected.");
 }
 
-// 3. Log Verification Function
+// 4) Log verification (simulated)
 function verifyLog(id) {
-    // DATABASE CONNECT HERE: Update log status to 'verified' AND add points to student user
-    document.getElementById(`log-${id}`).remove();
-    alert("Log Verified! Points added to student account.");
+  if (!confirm("Verify this log and award points?")) return;
+
+  // DATABASE CONNECT HERE:
+  // fetch('php/verify_log.php', { method:'POST', body: JSON.stringify({id}) })
+
+  const row = document.getElementById(`log-${id}`);
+  if (row) row.remove();
+
+  updateDashboardCounts();
+  alert("Log Verified! Points awarded.");
 }
 
-// 4. Statistics Chart
+// 5) Statistics Chart (Chart.js)
 let adminChartInstance = null;
 
 function loadAdminChart() {
-    const ctx = document.getElementById('adminChart').getContext('2d');
-    
-    // Destroy old chart if exists (prevents glitching when switching tabs)
-    if (adminChartInstance) {
-        adminChartInstance.destroy();
-    }
+  const canvas = document.getElementById("adminChart");
+  if (!canvas) return;
 
-    // DATABASE CONNECT HERE: Fetch these numbers from your DB
-    adminChartInstance = new Chart(ctx, {
-        type: 'bar', // or 'pie'
-        data: {
-            labels: ['Plastic', 'Paper', 'E-Waste', 'Metal', 'Glass'],
-            datasets: [{
-                label: 'Total Collected (kg)',
-                data: [500, 300, 200, 250, 100], // <-- Connect this array to DB data
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
+  const ctx = canvas.getContext("2d");
+  if (adminChartInstance) adminChartInstance.destroy();
+
+  // DATABASE CONNECT HERE: replace data with real DB totals
+  adminChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Plastic", "Paper", "E-Waste", "Metal", "Glass"],
+      datasets: [{
+        label: "Total Collected (kg)",
+        data: [500, 300, 200, 250, 100],
+        backgroundColor: ["#4ca626", "#70cbff", "#ffa51f", "#ad8364", "#2d8cff"]
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
 }
+
+// Init
+document.addEventListener("DOMContentLoaded", () => {
+  updateDashboardCounts();
+});

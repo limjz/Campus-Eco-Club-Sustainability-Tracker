@@ -45,17 +45,17 @@ $total_recycling = 1250.5; // kg
                 <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Pending Proposals</h3>
                     <p style="font-size: 2em; font-weight: bold;"><?php echo $pending_proposals; ?></p>
-                    <small>Requires Approval</small>
+                    <!-- <small>Requires Approval</small> -->
                 </div>
                 <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Pending Logs</h3>
                     <p style="font-size: 2em; font-weight: bold;"><?php echo $pending_logs; ?></p>
-                    <small>Student Submissions</small>
+                    <!-- <small>Student Submissions</small> -->
                 </div>
                 <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Total Impact</h3>
                     <p style="font-size: 2em; font-weight: bold;"><?php echo $total_recycling; ?> kg</p>
-                    <small>All time recycling</small>
+                    <!-- <small>All time recycling</small> -->
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ if ($result -> num_rows > 0){
   $user = $result -> fetch_assoc();
 
   // create badge using session variable 
-  $_SESSION['user_id'] = $user['id'];
+  $_SESSION['user_id'] = $user['user_id'];
   $_SESSION['username'] = $user['username'];
   $_SESSION['email'] = $user['email'];
   $_SESSION['role'] = $user['role'];

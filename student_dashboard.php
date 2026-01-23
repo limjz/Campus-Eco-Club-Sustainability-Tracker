@@ -1,13 +1,18 @@
 <?php
-// 1. SECURITY: Use the Master Guard we just created
-$required_role = 'student';
+$required_role = 'student'; // check the role before letting the user access to this dashboard
 include 'php/session_check.php'; 
+include 'php/db_connect.php';
 
-// DUMMY DATA (For specific student stats - replace with SQL later)
-// In real life: SELECT SUM(points) FROM logs WHERE student_id = $_SESSION['user_id']
-$student_points = 150; 
-$recycling_kg = 45.5;
-$events_joined = 3;
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page immediately
+    header("Location: login.html"); 
+    exit();
+}
+$student_id = $_SESSION['user_id']; //login id 
+
+
+include 'php/get_student_statistic.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +20,7 @@ $events_joined = 3;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal</title>
+    <title>Student Portal | Campus Eco-Club</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/EO_style.css"> 
 </head>
@@ -23,13 +28,29 @@ $events_joined = 3;
 <body>
 
     <div class="sidebar">
-        <h2>EcoClub Student</h2>
+        <h2><i class="fas fa-leaf"></i> Campus Eco-Club Sustainability Tracker</h2>
         <ul>
-            <li onclick="showSection('dashboard')" class="active"> <i class="fas fa-home"></i> Dashboard</li>
-            <li onclick="showSection('register')"> <i class="fas fa-calendar-plus"></i> Register Event</li>
-            <li onclick="showSection('logs')"> <i class="fas fa-edit"></i> Submit Logs</li>
-            <li onclick="showSection('tasks')"> <i class="fas fa-tasks"></i> My Tasks</li>
-            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> <i class="fas fa-sign-out-alt"></i> Logout</li>
+            <li onclick="showSection('dashboard')" class="active" id="nav-dashboard"> 
+                <i class="fas fa-home"></i> Dashboard
+            </li>
+            <li onclick="showSection('notifications')" id="nav-notif"> 
+                <i class="fas fa-bell"></i> Notifications
+            </li>
+            <li onclick="showSection('register')" id="nav-register"> 
+                <i class="fas fa-calendar-plus"></i> Register Event
+            </li>
+            <li onclick="showSection('logs')" id="nav-logs"> 
+                <i class="fas fa-edit"></i> Participant 
+            </li>
+            <li onclick="showSection('history')" id="nav-history"> 
+                <i class="fas fa-edit"></i> View Logs History 
+            </li>
+            <li onclick="showSection('tasks')" id="nav-tasks"> 
+                <i class="fas fa-tasks"></i> Volunteer 
+            </li>
+            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> 
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
         </ul>
     </div>
 
@@ -37,30 +58,59 @@ $events_joined = 3;
         
         <div id="dashboard" class="section active-section">
             <header>
-                <h1>Welcome, <?php echo $_SESSION['username'] ?? 'Student'; ?>!</h1>
+                <h1>Welcome, <?php echo $_SESSION ['username'] ?>!</h1>
                 <p>Track your personal contribution to the planet.</p>
             </header>
-            
+
+            <!-- statistic display -->
             <div class="cards-container">
                 <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Total Points Earned</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $student_points; ?> pts</p>
+                    <p class = "number_card"><?php echo $student_points; ?> pts</p>
                 </div>
                 <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Recycling Contribution</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $recycling_kg; ?> kg</p>
+                    <p class = "number_card"><?php echo $recycling_kg; ?> kg</p>
                 </div>
                 <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Events Joined</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $events_joined; ?></p>
+                    <p class = "number_card"><?php echo $events_joined; ?> </p>
                 </div>
+            </div>
+            <!-- leaderboard display -->
+            <div class="panel" style="margin-top: 30px;">
+                <h3>🏆 Top Recyclers</h3>
+                <ul class="leaderboard-list">
+                    <!-- the display code dy in the php -->
+                    <?php include 'php/get_leaderboard.php'; ?>
+                </ul>
+            </div>
+
+
+        </div>
+
+        <div id="notifications" class="section">
+            <h2>🔔 Your Notifications</h2>
+            <div class="panel">
+                <ul class="notif-list" id="notificationListBody">
+                    <li class="notif-item unread">
+                        <strong>Test Alert</strong>
+                        <p>This is how an unread message looks.</p>
+                        <small>Just now</small>
+                    </li>
+                    
+                    <li class="notif-item">
+                        <strong>Old Message</strong>
+                        <p>This is how a read message looks.</p>
+                        <small>Yesterday</small>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <div id="register" class="section">
             <h2>📢 Upcoming Events</h2>
-            <p>Select an event to join as a participant.</p>
-            
+            <p>Select an event to join as a participant or volunteer.</p>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -78,28 +128,52 @@ $events_joined = 3;
         <div id="logs" class="section">
             <h2>📝 Submit Activity Log</h2>
             <div class="panel">
-                <form id="logForm" onsubmit="submitLog(event)">
-                    <div class="form-group">
+                <form id="logForm" onsubmit="submitLog(event)" enctype="multipart/form-data">
+                    
+                <div class="form-group">
                         <label>Select Event You Joined:</label>
-                        <select id="logEventSelect" required>
-                            <option value="1">Beach Cleanup 2026</option> 
-                            <option value="2">E-Waste Drive</option>
+                        <select name="event_id" id="logEventSelect" required>
+                             <option value="">Loading your events...</option> 
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Evidence (Description):</label>
-                        <textarea rows="3" placeholder="What did you do? (e.g., Collected 5kg of plastic)" required></textarea>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <input type="text" name="category" placeholder="e.g. Plastic, Paper" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (kg):</label>
+                            <input type="number" step="0.1" name="weight" placeholder="0.0" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Upload Photo Proof:</label>
-                        <input type="file" required>
+                        <input type="file" name="evidence" accept="image/*" required>
                     </div>
 
                     <button type="submit" class="btn-primary">Submit Log</button>
                 </form>
             </div>
+        </div>
+
+        <div id="history" class="section">
+            <h2>My Activity History</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Category</th>
+                        <th>Weight</th>
+                        <th>Status</th>
+                        <th>Points</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                    </tbody>
+            </table>
         </div>
 
         <div id="tasks" class="section">
@@ -109,8 +183,7 @@ $events_joined = 3;
             <div class="form-group">
                 <label>Filter by Event:</label>
                 <select id="taskEventSelect" onchange="loadMyTasks()">
-                    <option value="">Show All</option>
-                    <option value="1">Beach Cleanup 2026</option>
+                    <option value="">Loading your events...</option>
                 </select>
             </div>
 

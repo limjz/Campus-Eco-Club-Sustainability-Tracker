@@ -10,6 +10,7 @@ body { display: flex; height: 100vh; background-color: #f4f7f6; }
     padding: 20px;
 }
 .sidebar h2 { margin-bottom: 30px; font-size: 1.2rem; text-align: center;}
+
 /* remove bullet  */
 .sidebar ul { list-style: none; }
 .sidebar li {
@@ -45,6 +46,48 @@ h1 { color: #34495e; }
     /*box-shadow: 0 2px 5px rgba(0,0,0,0.1);*/
     /*border-left: 5px solid #1abc9c;*/
 }
+
+.number_card { 
+    font-size: 2.0em;
+    font-weight: bold;
+    color: #2c3e50;  /*same color as sidebar*/
+}
+
+
+/* leaderboard */
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc; /* Grey border */
+    background: white;
+}
+
+/* Style each row */
+.leaderboard-item {
+    display: flex;               /* Key rule: Aligns items in a row */
+    justify-content: space-between; /* Pushes Name to Left, Points to Right */
+    padding: 15px;               /* Space inside the row */
+    border-bottom: 1px solid #eee; /* Light line between rows */
+}
+
+/* Remove line from the last item */
+.leaderboard-item:last-child {
+    border-bottom: none;
+}
+
+/* Make the rank (#1) and points stand out */
+.rank {
+    font-weight: bold;
+    margin-right: 15px; /* Space between Rank and Name */
+    color: #555;
+}
+
+.points {
+    font-weight: bold;
+    color: #28a745; /* Green color for points */
+}
+
 
 /* Forms & Panels */
 .panel {
@@ -91,6 +134,11 @@ input, select, textarea {
 .status-pending { color: orange; font-weight: bold; }
 .status-approved { color: green; font-weight: bold; }
 
+/* Capitalize first letter for status */
+.status-approved, .status-pending, .status-rejected {
+    text-transform: capitalize; 
+}
+
 /* Task Grid */
 .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
 .volunteer-card {
@@ -104,12 +152,36 @@ input, select, textarea {
 /* Notifications */
 .two-col-layout { display: flex; gap: 20px; }
 .two-col-layout > div { flex: 1; }
+
+/* remove the bullet points */
 .notif-list { list-style: none; }
 .notif-item {
     padding: 15px;
     border-bottom: 1px solid #eee;
 }
-.notif-item.unread { background-color: #e8f8f5; border-left: 3px solid #1abc9c; }
+.notif-item.unread { 
+    background-color: #e8f8f5; 
+    border-left: 3px solid #1abc9c; 
+}
+
+
+/* Style the Text inside */
+/* .notif-item strong {
+    display: block; /* Force title to own line 
+    font-size: 1.1em;
+    color: #333;
+}
+.notif-item p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.95em;
+}
+.notif-item small {
+    color: #999;
+    font-size: 0.8em;
+} */
+
+
 .time { font-size: 0.8rem; color: #888; display: block; margin-top: 5px; }
 
 .chart-panel { max-width: 600px; margin: 0 auto; }
