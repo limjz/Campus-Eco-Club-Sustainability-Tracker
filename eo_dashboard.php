@@ -1,3 +1,26 @@
+<?php
+// 1. SECURITY (PHP Logic)// check if the username is correct onot 
+$require_role = "eo";
+include 'php/session_check.php'; 
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'eo') {
+    header("Location: login.html"); 
+    exit();
+}
+
+$eo_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+
+// Dummy stats for now (Replace with real SQL later)
+$active_events = 3;
+$pending_logs = 8;
+$total_participants = 45;
+
+?>
+
+
+
+<!-- this is the EO Dashboard UI code -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,22 +28,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Organizer Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="EO_style.css">
+    <link rel="stylesheet" href="css/EO_style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 
-<!-- side bar UI --> 
+<!-- sideBar UI --> 
 <body>
 
     <div class="sidebar">
-        <h2>Campus Eco-Club Sustainability Tracker </h2>
+        <h2><i class="fas fa-leaf"></i> Campus Eco-Club Sustainability Tracker</h2>
         <ul>
-            <li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>
-            <li onclick="showSection('proposals')"><i class="fas fa-file-signature"></i> Proposals</li>
-            <li onclick="showSection('management')"><i class="fas fa-tasks"></i> Event Tasks</li>
-            <li onclick="showSection('statistics')"><i class="fas fa-chart-pie"></i> Recycling Stats</li>
-            <li onclick="showSection('notifications')"><i class="fas fa-bell"></i> Notifications</li>
+            <li onclick="showSection('dashboard')" class="active"> 
+                <i class="fas fa-home"> </i> Dashboard
+            </li>
+            <li onclick="showSection('proposals')"> 
+                <i class="fas fa-file-signature"> </i> Proposals
+            </li>
+            <li onclick="showSection('volunteers')">  
+                <i class="fas fa-tasks"> </i> Task & Instruction Management
+            </li>
+            <!-- <li onclick="showSection('management')"> <i class="fas fa-tasks"> </i> Event Tasks</li> -->
+            <li onclick="showSection('statistics')"> 
+                <i class="fas fa-chart-pie"> </i> Recycling Stats
+            </li>
+            <li onclick="showSection('notifications')">
+                 <i class="fas fa-bell"> </i> Notifications
+            </li>
+            <li onclick="location.href='php/logout.php'" style="color: #ff6b6b; margin-top: 50px;"> 
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
         </ul>
     </div>
 
@@ -32,17 +69,17 @@
                 <p>Overview of your active eco-activities.</p>
             </header>
             <div class="cards-container">
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Active Events</h3>
-                    <p>3 Ongoing</p>
+                    <p class = "number_card"><?php echo $active_events; ?> </p>
                 </div>
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Pending Proposals</h3>
-                    <p>2 Under Review</p>
+                    <p class = "number_card"><?php echo $pending_logs; ?> </p>
                 </div>
-                <div class="card">
+                <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Volunteers</h3>
-                    <p>12 Active</p>
+                    <p class = "number_card"><?php echo $total_participants; ?></p>
                 </div>
             </div>
         </div>
@@ -59,6 +96,7 @@
                         <label>Event Title</label>
                         <input type="text" id="propTitle" required placeholder="e.g. Beach Cleanup">
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>Date</label>
@@ -69,15 +107,19 @@
                             <input type="time" id="propTime" required>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label>Venue</label>
                         <input type="text" id="propVenue" required>
                     </div>
+
                     <div class="form-group">
                         <label>Description</label>
                         <textarea id="propDesc" rows="3"></textarea>
                     </div>
+
                     <button type="submit" class="btn-primary">Submit Proposal</button>
+                    
                 </form>
             </div>
 
@@ -89,7 +131,7 @@
                             <th>Title</th>
                             <th>Date</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                         </tr>
                     </thead>
                     <tbody id="proposalTableBody">
@@ -98,7 +140,7 @@
             </div>
         </div>
 
-        <div id="management" class="section">
+        <!-- <div id="management" class="section">
             <header>
                 <h1>Event Management</h1>
             </header>
@@ -116,11 +158,48 @@
                 <div class="task-grid" id="volunteerList">
                     </div>
             </div>
+        </div> -->
+
+        <div id="volunteers" class = "section"> 
+            <header>
+                <h1>Task & Instruction Management</h1>
+            </header>
+            
+
+            <!-- option selector -->
+            <div style = "margin-bottom: 20px;"> 
+                <label> Select Event: </label> 
+
+                <!-- onchange trigger the function in js -->
+                <select id="eventSelect" onchange = "filterParticipants()"> 
+                    <!-- value is the eventID user choose -->
+                    <option value=""> ----Choose an Event ----</option>
+                </select>
+
+            </div>
+
+            <!-- table display -->
+            <table class = "data-table">
+                <thead> 
+                    <tr> 
+                        <th> Name</th>
+                        <th> Role</th>
+                        <th> Current Task (Event Assignment)</th>
+                        <!-- <th> Action</th> -->
+                        
+                    </tr>
+                </thead>
+                <tbody id = "volunteerTableBody"> 
+                    </tbody>
+            </table>
         </div>
+
+
+
 
         <div id="statistics" class="section">
             <header>
-                <h1>Recycling Statistics</h1>
+                <h1>Event Recycling Statistics</h1>
             </header>
             
             <div class="form-group">
@@ -186,6 +265,7 @@
 
     </div>
 
-    <script src="function.js"></script>
+    <script src="js/eo_script.js"></script>
+
 </body>
 </html>
