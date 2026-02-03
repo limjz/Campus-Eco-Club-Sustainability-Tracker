@@ -17,7 +17,7 @@ if (!isset($_FILES['evidence']) || $_FILES['evidence']['error'] !== UPLOAD_ERR_O
 }
 
 //setup path for save the upload material
-$base_dir = dirname(__DIR__); 
+$base_dir = dirname(__DIR__ , 2); 
 $target_dir = $base_dir . "/uploads/";
 
 // Create folder if it's missing (Safety net)
@@ -28,25 +28,33 @@ if (!file_exists($target_dir)) {
 // create a unique name to prevent the same name of file save in 'upload' folder and replace 
 $file_extension = pathinfo($_FILES["evidence"]["name"], PATHINFO_EXTENSION);
 
+// Allow only valid images
+$allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+if (!in_array(strtolower($file_extension), $allowed_ext)) {
+    echo json_encode(["status" => "error", "message" => "Invalid file type. Only JPG, PNG, GIF allowed."]);
+    exit();
+}
+
+
 $new_filename = time() . "_" . $_SESSION['user_id'] . "." . $file_extension; 
 
 $target_file = $target_dir . $new_filename;
 $db_path = "uploads/" . $new_filename; // save the path to sql instead of the filename oni
 
-// 5. Move File & Save to DB
+// Move File & Save to DB
 if (move_uploaded_file($_FILES["evidence"]["tmp_name"], $target_file)) {
     
     // Get Form Data
-    $student_id = $_SESSION['user_id'];
-    $event_id = $_POST['event_id'];
+    $user_id = $_SESSION['user_id'];
+    $event_id = intval($_POST['event_id']);
     $category = $_POST['category']; 
-    $weight = $_POST['weight'];
+    $weight = floatval($_POST['weight']);
 
     // prepare a template for user input data to fill in 
-    $stmt = $conn->prepare("INSERT INTO logs (student_id, event_id, category, weight, photo_evidence, status) VALUES (?, ?, ?, ?, ?, 'pending')");
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, event_id, category, weight, photo_evidence, status) VALUES (?, ?, ?, ?, ?, 'pending')");
     
-    //iisds stand for: int, int, string, double, string; its the type of each input data
-    $stmt->bind_param("iisds", $student_id, $event_id, $category, $weight, $db_path);
+    //iisds: int, int, string, double, string;
+    $stmt->bind_param("iisds", $user_id, $event_id, $category, $weight, $db_path);
 
     //execute to put the input data into template and ssave to sql 
     if ($stmt->execute()) {

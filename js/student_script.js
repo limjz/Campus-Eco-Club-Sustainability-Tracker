@@ -282,7 +282,7 @@ function loadMyTasks() {
 
     container.innerHTML = "<p>Loading tasks...</p>";
 
-    fetch(`php/StudentController/get_volunteer_task.php?event_id=${eventId}`)
+    fetch(`php/StudentController/get_student_task.php?event_id=${eventId}`)
     .then(response => response.json()) 
     .then(data => {
         container.innerHTML = ""; 
@@ -294,12 +294,20 @@ function loadMyTasks() {
 
 
         data.forEach(task => {
+            // check the color based on the color
+            const badgeColor = task.role === 'Volunteer' ? '#f1c40f' : '#3498db'; // Yellow or Blue
+
             const html = `
             <div class="task-card">
-                <div class="task-header">
+                <div class="task-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <strong><i class="fas fa-thumbtack"></i> Task Assigned</strong>
+                    
+                    <span style="background-color: ${badgeColor}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.85em;">
+                        ${task.role}
+                    </span>
                 </div>
-                <p class="task-desc">${task.task_description}</p>
+                <hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
+                <p class="task-desc" style="font-size: 1.1em; color: #333;">${task.task_description}</p>
             </div>`;
             container.innerHTML += html;
         });

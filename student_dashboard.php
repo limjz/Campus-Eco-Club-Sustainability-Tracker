@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 $student_id = $_SESSION['user_id']; //login id 
 
 
-include 'php/StudentController/get_student_statistic.php';
+include 'php/StudentController/get_student_dashboard_statistic.php';
 
 ?>
 
@@ -177,7 +177,7 @@ include 'php/StudentController/get_student_statistic.php';
         </div>
 
         <div id="tasks" class="section">
-            <h2>My Volunteer Tasks</h2>
+            <h2>My Tasks</h2>
             <p>Check tasks assigned to you by the Event Organizer.</p>
             
             <div class="form-group">

@@ -6,9 +6,9 @@ include __DIR__ . '/../db_connect.php';
 // sort flw the top 5 total points 
 $sql = "SELECT u.username, SUM(l.points_awarded) as total_points
         FROM logs l 
-        JOIN users u ON l.student_id = u.user_id 
+        JOIN users u ON l.user_id = u.user_id 
         WHERE l.status = 'approved' 
-        GROUP BY l.student_id 
+        GROUP BY l.user_id 
         ORDER BY total_points DESC
         LIMIT 5";
 

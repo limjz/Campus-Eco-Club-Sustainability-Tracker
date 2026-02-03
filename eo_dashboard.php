@@ -1,5 +1,5 @@
 <?php
-// 1. SECURITY (PHP Logic)// check if the username is correct onot 
+// check if the username is correct onot 
 $require_role = "eo";
 include 'php/session_check.php'; 
 
@@ -11,13 +11,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'eo') {
 $eo_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-// Dummy stats for now (Replace with real SQL later)
-$active_events = 3;
-$pending_logs = 8;
-$total_participants = 45;
+include 'php/EoController/get_eo_dashboard_statistic.php';
 
 ?>
-
 
 
 <!-- this is the EO Dashboard UI code -->
@@ -45,7 +41,7 @@ $total_participants = 45;
             <li onclick="showSection('proposals')"> 
                 <i class="fas fa-file-signature"> </i> Proposals
             </li>
-            <li onclick="showSection('volunteers')">  
+            <li onclick="showSection('assign-tasks')">  
                 <i class="fas fa-tasks"> </i> Task & Instruction Management
             </li>
             <!-- <li onclick="showSection('management')"> <i class="fas fa-tasks"> </i> Event Tasks</li> -->
@@ -69,18 +65,27 @@ $total_participants = 45;
                 <p>Overview of your active eco-activities.</p>
             </header>
             <div class="cards-container">
+                <!-- active events card on the dashboard  -->
                 <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Active Events</h3>
                     <p class = "number_card"><?php echo $active_events; ?> </p>
                 </div>
+                <!-- pending proposal card on the dashboard  -->
                 <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Pending Proposals</h3>
-                    <p class = "number_card"><?php echo $pending_logs; ?> </p>
+                    <p class = "number_card"><?php echo $pending_proposals; ?> </p>
                 </div>
+                <!-- volunteers number card on the dashboard  -->
                 <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Volunteers</h3>
                     <p class = "number_card"><?php echo $total_participants; ?></p>
                 </div>
+                <!-- participants number card on the dashboard  -->
+                <div class="card" style="border-left: 5px solid #6f42c1;">
+                    <h3>Participants</h3>
+                    <p class="number_card"><?php echo $total_participants; ?></p>
+                </div>
+
             </div>
         </div>
 
@@ -92,6 +97,7 @@ $total_participants = 45;
             <div class="panel">
                 <h3>Submit New Proposal</h3>
                 <form id="proposalForm" onsubmit="submitProposal(event)">
+                    <input type="hidden" id="editProposalId" value="">
                     <div class="form-group">
                         <label>Event Title</label>
                         <input type="text" id="propTitle" required placeholder="e.g. Beach Cleanup">
@@ -115,7 +121,7 @@ $total_participants = 45;
 
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea id="propDesc" rows="3"></textarea>
+                        <input type="text" id="propDesc" required></input>
                     </div>
 
                     <button type="submit" class="btn-primary">Submit Proposal</button>
@@ -140,61 +146,101 @@ $total_participants = 45;
             </div>
         </div>
 
-        <!-- <div id="management" class="section">
-            <header>
-                <h1>Event Management</h1>
-            </header>
-            
-            <div class="form-group">
-                <label>Select Active Event:</label>
-                <select id="eventSelectManage" onchange="loadEventVolunteers()">
-                    <option value="1">Beach Cleanup 2026</option>
-                    <option value="2">E-Waste Drive</option>
-                </select>
-            </div>
+        <div id ="proposalModal" class ="modal" style="display: none">
+            <div class = "modal-content"> 
+                <span class="close-btn" onclick="closeModal()"> &times;</span>
 
-            <div class="panel">
-                <h3>Assign Tasks & Instructions</h3>
-                <div class="task-grid" id="volunteerList">
+                <h2 id="viewTitle" syle="color: #2c3e50"> Proposal Title</h2>
+                
+                <!-- lines -->
+                <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;"> 
+                
+
+                <div class="modal-body">
+            
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span id="viewStatus" class="detail-value"></span>
                     </div>
-            </div>
-        </div> -->
 
-        <div id="volunteers" class = "section"> 
-            <header>
-                <h1>Task & Instruction Management</h1>
-            </header>
-            
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span id="viewDate" class="detail-value"></span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span id="viewTime" class="detail-value"></span> 
+                    </div>
 
-            <!-- option selector -->
-            <div style = "margin-bottom: 20px;"> 
-                <label> Select Event: </label> 
+                    <div class="detail-row">
+                        <span class="detail-label">Venue:</span>
+                        <span id="viewVenue" class="detail-value"></span>
+                    </div>
+                    
+                    <div class="description-section">
+                        <span class="detail-label">Description:</span>
+                        <div id="viewDesc" class="description-box">
+                            </div>
+                    </div>
+                </div>
 
-                <!-- onchange trigger the function in js -->
-                <select id="eventSelect" onchange = "filterParticipants()"> 
-                    <!-- value is the eventID user choose -->
-                    <option value=""> ----Choose an Event ----</option>
-                </select>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn-primary" onclick="closeModal()">Close</button>
+                </div>
 
-            </div>
-
-            <!-- table display -->
-            <table class = "data-table">
-                <thead> 
-                    <tr> 
-                        <th> Name</th>
-                        <th> Role</th>
-                        <th> Current Task (Event Assignment)</th>
-                        <!-- <th> Action</th> -->
-                        
-                    </tr>
-                </thead>
-                <tbody id = "volunteerTableBody"> 
-                    </tbody>
-            </table>
+            </div> 
         </div>
 
 
+        <div id="assign-tasks" class ="section"> 
+            <header>
+                <h1>Task & Instruction Management</h1>
+                <p>Delegate responsibilities to volunteers or participants.</p>
+            </header>
+
+            <div class="panel">
+                <h3>Manage Volunteers & Participants</h3>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                    
+                    <div class="form-group" style="margin-bottom: 0; flex: 1;"> 
+                        <label style="font-weight: bold; margin-right: 10px;">Select Event:</label> 
+                        <select id="eventSelect" class="form-control" onchange="filterParticipants()" style="display: inline-block; width: auto; min-width: 250px;"> 
+                            <option value="">-- Select Event --</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-controls" style="background: #f8f9fa; padding: 10px 15px; border-radius: 5px; border: 1px solid #ddd;">
+                        <span style="margin-right: 10px; font-weight: bold; color: #555;">Filter:</span>
+                        
+                        <label style="margin-right: 15px; cursor: pointer; display: inline-flex; align-items: center;">
+                            <input type="checkbox" id="chkVolunteer" checked onchange="renderTaskTable()" style="margin-right: 5px;"> 
+                            Show Volunteers
+                        </label>
+                        
+                        <label style="cursor: pointer; display: inline-flex; align-items: center;">
+                            <input type="checkbox" id="chkParticipant" checked onchange="renderTaskTable()" style="margin-right: 5px;"> 
+                            Show Participants
+                        </label>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th style="width: 15%;">Role</th>
+                            <th style="width: 45%;">Task / Instruction</th>
+                            <th style="width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="volunteerTableBody">
+                        <tr><td colspan="4" style="text-align:center; padding: 20px;">Please select an event to manage tasks.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 
         <div id="statistics" class="section">
@@ -205,8 +251,7 @@ $total_participants = 45;
             <div class="form-group">
                 <label>View Stats For:</label>
                 <select id="eventSelectStats" onchange="updateChart()">
-                    <option value="1">Beach Cleanup 2026</option>
-                    <option value="2">E-Waste Drive</option>
+                    <option value="">-- Loading... --</option>
                 </select>
             </div>
 
@@ -219,29 +264,37 @@ $total_participants = 45;
 
         <div id="notifications" class="section">
             <header>
-                <h1>Notifications</h1>
+                <h1>Send Announcement </h1>
+                <p>Notify all participants of a specific event.</p>
             </header>
 
             <div class="two-col-layout">
                 <div class="panel">
+
                     <h3>Send Broadcast</h3>
-                    <form onsubmit="sendNotification(event)">
+                    <form id = "notiForm" onsubmit="sendNotification(event)">
+
                         <div class="form-group">
-                            <label>Target Audience</label>
-                            <select>
-                                <option>All Participants</option>
-                                <option>Volunteers Only</option>
+                            <label>Select Audience (Event):</label>
+                            <select  id="notifEventSelect" required>
+                                <option>Loading</option>
                             </select>
                         </div>
+
                         <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" required placeholder="Subject">
+                            <label>Title:</label>
+                            <input type="text" id = "notifTitle" required placeholder="e.g Change of date">
                         </div>
+
                         <div class="form-group">
-                            <label>Message</label>
-                            <textarea rows="4" required placeholder="Type your update..."></textarea>
+                            <label>Message:</label>
+                            <textarea id= "notifMessage" rows="4" required placeholder="Type your message here..."></textarea>
                         </div>
-                        <button type="submit" class="btn-primary">Send Alert</button>
+
+                        <button type="submit" class="btn-primary">
+                            Send Notification
+                        </button>
+
                     </form>
                 </div>
 

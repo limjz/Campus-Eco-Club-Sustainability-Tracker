@@ -8,13 +8,13 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$student_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 
 //join logs and event table tgt
 $sql = "SELECT l.log_id, e.title, l.category, l.weight, l.status, l.submission_date, l.points_awarded 
         FROM logs l
         LEFT JOIN events e ON l.event_id = e.event_id
-        WHERE l.student_id = $student_id
+        WHERE l.user_id = $user_id
         ORDER BY l.submission_date DESC";
 
 $result = $conn ->query($sql); 

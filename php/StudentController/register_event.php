@@ -14,7 +14,7 @@ if(isset($_SESSION['user_id']) && isset($data->event_id) && isset($data->role))
     $role = $data->role; // 'Participant' or 'Volunteer'
 
     // Check if already registered
-    $sql_check ="SELECT * FROM registrations WHERE student_id = '$studentID' AND event_id = '$eventID'";
+    $sql_check ="SELECT * FROM registrations WHERE user_id = '$studentID' AND event_id = '$eventID'";
     $result_check = $conn->query($sql_check);
 
 
@@ -27,7 +27,7 @@ if(isset($_SESSION['user_id']) && isset($data->event_id) && isset($data->role))
     else 
     {
         // register student // Insert into registrations table 
-        $sql = "INSERT INTO registrations (student_id, event_id, role) VALUES ('$studentID', '$eventID', '$role')";
+        $sql = "INSERT INTO registrations (user_id, event_id, role) VALUES ('$studentID', '$eventID', '$role')";
         
         // msg display 
         if($conn->query($sql) === TRUE) 

@@ -8,9 +8,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$student_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 
-$sql = "SELECT * FROM notifications WHERE student_id = $student_id ORDER BY is_read ASC, created_at DESC"; 
+$sql = "SELECT * FROM notifications WHERE user_id = $user_id ORDER BY is_read ASC, created_at DESC"; 
 
 $result = $conn->query($sql);
 $notifs = []; 

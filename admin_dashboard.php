@@ -1,13 +1,14 @@
 <?php
-// 1. SECURITY: Use the Master Guard
 $required_role = 'admin';
 include 'php/session_check.php'; 
 
-// DUMMY DATA FOR DASHBOARD COUNTERS (Replace with SQL later)
-// $pending_proposals = $conn->query("SELECT COUNT(*) FROM events WHERE status='pending'")->fetch_row()[0];
-$pending_proposals = 4;
-$pending_logs = 12;
-$total_recycling = 1250.5; // kg
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.html"); 
+    exit();
+}
+
+include 'php/AdminController/get_admin_dashboard_statistic.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +24,7 @@ $total_recycling = 1250.5; // kg
 
 <body>
 
-    <div class="sidebar" style="background: #1a252f;"> 
+    <div class="sidebar"> 
         <h2><i class="fas fa-leaf"></i> Campus Eco-Club Sustainability Tracker</h2>
         <ul>
             <li onclick="showSection('dashboard')" class="active"> 
@@ -55,17 +56,23 @@ $total_recycling = 1250.5; // kg
             <div class="cards-container">
                 <div class="card" style="border-left: 5px solid #ffc107;">
                     <h3>Pending Proposals</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $pending_proposals; ?></p>
+                    <p style="font-size: 2em; font-weight: bold;">
+                        <?php echo $pending_proposals; ?>
+                    </p>
                     <!-- <small>Requires Approval</small> -->
                 </div>
                 <div class="card" style="border-left: 5px solid #17a2b8;">
                     <h3>Pending Logs</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $pending_logs; ?></p>
+                    <p id="stat-logs" style="font-size: 2em; font-weight: bold;">
+                        <?php echo $pending_logs; ?>
+                    </p>
                     <!-- <small>Student Submissions</small> -->
                 </div>
                 <div class="card" style="border-left: 5px solid #28a745;">
                     <h3>Total Impact</h3>
-                    <p style="font-size: 2em; font-weight: bold;"><?php echo $total_recycling; ?> kg</p>
+                    <p style="font-size: 2em; font-weight: bold;">
+                        <?php echo $total_recycable; ?> kg
+                    </p>
                     <!-- <small>All time recycling</small> -->
                 </div>
             </div>
@@ -81,30 +88,11 @@ $total_recycling = 1250.5; // kg
                             <th>Proposed By (EO)</th>
                             <th>Date</th>
                             <th>Description</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                         </tr>
                     </thead>
+                    
                     <tbody id="proposalTableBody">
-                        <tr id="prop-101">
-                            <td>River Cleaning Campaign</td>
-                            <td>EO Sarah</td>
-                            <td>2026-05-20</td>
-                            <td>Cleaning the Klang riverbank...</td>
-                            <td>
-                                <button class="btn-primary" onclick="approveProposal(101)" style="background:green;">Approve</button>
-                                <button class="btn-primary" onclick="rejectProposal(101)" style="background:red;">Reject</button>
-                            </td>
-                        </tr>
-                        <tr id="prop-102">
-                            <td>Zero Waste Workshop</td>
-                            <td>EO John</td>
-                            <td>2026-06-15</td>
-                            <td>Teaching students composting...</td>
-                            <td>
-                                <button class="btn-primary" onclick="approveProposal(102)" style="background:green;">Approve</button>
-                                <button class="btn-primary" onclick="rejectProposal(102)" style="background:red;">Reject</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -120,28 +108,10 @@ $total_recycling = 1250.5; // kg
                             <th>Event</th>
                             <th>Claimed Activity</th>
                             <th>Proof</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                         </tr>
                     </thead>
                     <tbody id="logsTableBody">
-                        <tr id="log-55">
-                            <td>Ali bin Abu</td>
-                            <td>Beach Cleanup 2026</td>
-                            <td>Collected 5kg Plastic</td>
-                            <td><a href="#" style="color:blue;">View Photo</a></td>
-                            <td>
-                                <button class="btn-primary" onclick="verifyLog(55)" style="background:#007bff;">Verify & Award Points</button>
-                            </td>
-                        </tr>
-                        <tr id="log-56">
-                            <td>Mei Ling</td>
-                            <td>E-Waste Drive</td>
-                            <td>Donated 2 Laptops</td>
-                            <td><a href="#" style="color:blue;">View Photo</a></td>
-                            <td>
-                                <button class="btn-primary" onclick="verifyLog(56)" style="background:#007bff;">Verify & Award Points</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -171,12 +141,3 @@ $total_recycling = 1250.5; // kg
 
 </body>
 </html>
-
-
-<!-- 
-For Proposals: Create php/approve_event.php. It should run: UPDATE events SET status = 'approved' WHERE event_id = ?
-
-For Logs: Create php/verify_log.php. It should run: UPDATE activity_logs SET status = 'verified' WHERE log_id = ? 
-(And optionally: UPDATE users SET points = points + 10 WHERE id = student_id)
-
--->

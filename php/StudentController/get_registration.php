@@ -10,7 +10,7 @@ $studentID = $_SESSION['user_id'];
 $sql = "SELECT e.event_id, e.title 
         FROM registrations r
         JOIN events e ON r.event_id = e.event_id
-        WHERE r.student_id = '$studentID'";
+        WHERE r.user_id = '$studentID'";
 
 $result = $conn->query($sql);
 
