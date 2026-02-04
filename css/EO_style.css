@@ -413,3 +413,27 @@ input:focus, select:focus, textarea:focus {
     text-decoration: none;
     cursor: pointer;
 }
+
+
+#impactSummaryList {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 10px;      
+    margin-bottom: 12px;     /* The GAP you wanted */
+    background-color: #fff;  /* Optional: White background looks nice */
+    border-bottom: 1px solid #eee; 
+    font-size: 15px;
+}
+
+/* Optional: Make the last one flush */
+.stat-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}

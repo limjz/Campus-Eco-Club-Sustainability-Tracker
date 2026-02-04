@@ -121,21 +121,16 @@ include 'php/AdminController/get_admin_dashboard_statistic.php';
             <header><h1>Overall Recycling Statistics</h1></header>
             
             <div class="panel chart-panel">
-                <canvas id="adminChart" style="max-height: 400px;"></canvas>
+                <canvas id="recyclingBarChart" style="max-height: 400px;"></canvas>
             </div>
 
             <div class="panel">
-                <h3>Impact Summary</h3>
-                <ul>
-                    <li><strong>Plastic:</strong> 500 kg</li>
-                    <li><strong>Paper:</strong> 300 kg</li>
-                    <li><strong>E-Waste:</strong> 200 kg</li>
-                    <li><strong>Metal:</strong> 250 kg</li>
+                <h3>Recycable Summary</h3>
+                <ul id="statsDescription">
+                    <li>Loading stats...</li>
                 </ul>
             </div>
         </div>
-
-    </div>
 
     <script src="js/admin_script.js"></script>
 

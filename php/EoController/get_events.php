@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id'])) {
 $organizer_id = $_SESSION['user_id'];
 
 
-// allow 'open', 'ongoing', or 'closed'.  hide the 'cancelled'.
+// allow 'open', 'ongoing' X 'close' and 'cancelled'
 $sql = "SELECT event_id, title FROM events 
         WHERE organizer_id = ? 
         AND status IN ('open', 'ongoing') 

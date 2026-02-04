@@ -123,6 +123,12 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                         <label>Description</label>
                         <input type="text" id="propDesc" required></input>
                     </div>
+                    
+                    <div class="form-group">
+                        <label>Recycling Goal (kg):</label>
+                        <input type="number" name="target_goal" step="0.1" min="1" placeholder="e.g. 50" required>
+                        <small>Event will auto-close when this amount is collected.</small>
+                    </div>
 
                     <button type="submit" class="btn-primary">Submit Proposal</button>
                     

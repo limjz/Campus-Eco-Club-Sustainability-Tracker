@@ -71,9 +71,10 @@ function loadAvailableEvents() {
 
         // register event button also in the table, either register as volunteer or participant 
         data.forEach(event => {
+
             const row = `<tr>
-                <td>${event.title}</td>
-                <td>${event.date}</td>
+                <td>${event.title} </td>
+                <td>${event.event_date}</td>
                 <td>${event.venue || 'TBA'}</td>
                 <td>
                     <button class="btn-primary" onclick="registerForEvent('${event.event_id}', 'Participant')">Join as Participant</button>
@@ -196,11 +197,14 @@ function loadMyLogs() {
 
 
 // Load Registered Events for Dropdown
+let myRegisteredEvents = [];
+
 function loadRegisteredEvents() {
 
     fetch('php/StudentController/get_registration.php')
     .then(response => response.json())
     .then(data => {
+        myRegisteredEvents = data;
 
         // Select both dropdowns
         const logSelect = document.getElementById('logEventSelect');
@@ -229,6 +233,34 @@ function loadRegisteredEvents() {
         }
     })
 }
+
+function updateEventGoalInfo() {
+    const select = document.getElementById('logEventSelect');
+    const display = document.getElementById('goalDisplay');
+    const selectedId = select.value;
+
+    if (!selectedId) {
+        display.style.display = "none";
+        return;
+    }
+
+    // Find the specific event data from our global array
+    const event = myRegisteredEvents.find(e => e.event_id == selectedId);
+
+    if (event) {
+        display.style.display = "block";
+        display.innerHTML = `
+            <div style="background: #eef2f3; padding: 10px; border-radius: 5px; border-left: 5px solid #3498db;">
+                <p style="margin:0; font-weight:bold; color:#333;">Event Target:</p>
+                <span style="font-size: 1.1em;">
+                     Goal: <strong>${event.goal}kg</strong> &nbsp;|&nbsp; 
+                     Remaining: <strong style="color: #e67e22;">${event.remaining}kg</strong>
+                </span>
+            </div>
+        `;
+    }
+}
+
 
 
 // Load Notifications
@@ -263,6 +295,11 @@ function loadNotifications() {
                 <span class="time">${notif.created_at}</span>
             </li>`;
             list.innerHTML += html;
+
+
+            if (data.length > 0) {
+                fetch('php/StudentController/mark_read.php');
+            }
         });
     })
     .catch(err => console.error(err));

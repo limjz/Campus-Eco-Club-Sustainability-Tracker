@@ -85,7 +85,8 @@ function submitProposal (e) {
         date: document.getElementById('propDate').value,
         time: document.getElementById('propTime').value,
         venue: document.getElementById('propVenue').value,
-        description : document.getElementById('propDesc').value
+        description : document.getElementById('propDesc').value,
+        target_goal: document.getElementById('target_goal').value 
     };
 
     let url = 'php/EoController/add_proposal.php'; // set default: adding the proposal - direct to the add_proposal.php
@@ -142,6 +143,7 @@ function viewProposal (index){
     // Check if these fields exist in the db, if not will display empty
     document.getElementById('viewVenue').innerText = prop.venue;
     document.getElementById('viewDesc').innerText = prop.description;
+    
 
     // Show the modal
     document.getElementById('proposalModal').style.display = 'block';
@@ -383,7 +385,7 @@ function updateChart() {
                 datasets: [{
                     label: `Recycled Amount (kg)`,
                     data: data.values, // Data from PHP file 
-                    backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6'], // Add more colors if needed
+                    backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6'], 
                     borderWidth: 1
                 }]
             },

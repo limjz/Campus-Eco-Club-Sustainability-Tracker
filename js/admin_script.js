@@ -15,7 +15,7 @@ function showSection(sectionId) {
     // Dynamic Loading
     if (sectionId === 'proposals') loadPendingProposals(); 
     if (sectionId === 'logs') loadPendingLogs(); 
-    if (sectionId === "statistics") loadAdminChart();
+    if (sectionId === "statistics") loadOverallStats();
 }
 
 // --------------- Proposal --------------- 
@@ -26,7 +26,7 @@ function loadPendingProposals() {
     tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>Loading...</td></tr>";
 
     fetch('php/AdminController/get_pending_proposals.php')
-    .then(responseponse => responseponse.json())
+    .then(responseponseponse => responseponseponse.json())
     .then(data => { 
         tbody.innerHTML = "";
 
@@ -68,7 +68,7 @@ function approveProposal(id) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'proposal_id=' + id
     })
-    .then(responseponse => responseponse.json())
+    .then(responseponseponse => responseponseponse.json())
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
@@ -94,7 +94,7 @@ function rejectProposal(id) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'proposal_id=' + id 
     })
-    .then(responseponse => responseponse.json())
+    .then(responseponseponse => responseponseponse.json())
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
@@ -110,7 +110,7 @@ function rejectProposal(id) {
     .catch(err => console.error("Reject Error:", err));
 }
 
-// Helper to update numbers on the dashboard without refresponsehing
+// Helper to update numbers on the dashboard without refresponseponsehing
 function updateCounter(elementId, change) {
     const el = document.getElementById(elementId);
     if (el) {
@@ -128,7 +128,7 @@ function loadPendingLogs() {
     tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>Loading logs...</td></tr>";
 
     fetch('php/AdminController/get_pending_logs.php')
-    .then(responseponse => responseponse.json())
+    .then(responseponseponse => responseponseponse.json())
     .then(data => {
         tbody.innerHTML = "";
 
@@ -184,7 +184,7 @@ function approveLog(id) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(responseponse => responseponse.json())
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
@@ -220,7 +220,7 @@ function rejectLog (id) {
         method: 'POST',
         body: formData 
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
@@ -246,29 +246,74 @@ function rejectLog (id) {
 
 // ---------------- STATISTICS (Chart.js) ------------------- 
 
-let adminChartInstance = null;
+function loadOverallStats() {
+    fetch('php/AdminController/get_dashboard_stats.php')
+    .then(response => response.json())
+    .then(data => {
+        
+        //bar chartt
+        const ctx = document.getElementById('recyclingBarChart');
+        if (ctx) {
+            if (window.myBarChart) window.myBarChart.destroy();
 
-function loadAdminChart() {
-    const canvas = document.getElementById("adminChart");
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (adminChartInstance) adminChartInstance.destroy();
-
-    // Placeholder data (We will connect this to DB later)
-    adminChartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: ["Plastic", "Paper", "E-Waste", "Metal", "Glass"],
-            datasets: [{
-                label: "Total Collected (kg)",
-                data: [500, 300, 200, 250, 100],
-                backgroundColor: ["#4ca626", "#70cbff", "#ffa51f", "#ad8364", "#2d8cff"]
-            }]
-        },
-        options: {
-            responseponsive: true,
-            scales: { y: { beginAtZero: true } }
+            window.myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Total Recycled (kg)',
+                        data: data.data,
+                        backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Ensures it fits the container
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Weight (kg)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false } // Hide legend since bars have colors
+                    }
+                }
+            });
         }
-    });
+
+        //description for each of the category 
+        const listContainer = document.getElementById('statsDescription');
+        if (listContainer) {
+            listContainer.innerHTML = ""; // Clear old data
+
+            if (data.breakdown.length === 0) {
+                listContainer.innerHTML = "<p>No data available yet.</p>";
+            } else {
+                // Create the <ul> wrapper dynamically
+                const ul = document.createElement("ul");
+                ul.style.listStyle = "none";
+                ul.style.padding = "0";
+
+                data.breakdown.forEach(item => {
+                    const li = document.createElement("li");
+                    
+                    li.classList.add("stat-item"); // css come here
+                    li.innerHTML = `<strong>${item.name}</strong> 
+                                    <span style="color: #28a745; font-weight: bold;">${item.weight} kg</span>`;
+
+                    ul.appendChild(li);
+                });
+                listContainer.appendChild(ul);
+            }
+        }
+
+    })
+    .catch(err => console.error("Stats Error:", err));
 }
+
+// init 
+document.addEventListener("DOMContentLoaded", () => {
+    loadOverallStats();
+});

@@ -130,12 +130,15 @@ include 'php/StudentController/get_student_dashboard_statistic.php';
             <div class="panel">
                 <form id="logForm" onsubmit="submitLog(event)" enctype="multipart/form-data">
                     
-                <div class="form-group">
-                        <label>Select Event You Joined:</label>
-                        <select name="event_id" id="logEventSelect" required>
-                             <option value="">Loading your events...</option> 
-                        </select>
+                    <div class="form-group">
+                            <label>Select Event You Joined:</label>
+                            <select name="event_id" id="logEventSelect" required required onchange="updateEventGoalInfo()">
+                                <option value="">Loading your events...</option> 
+                            </select>
                     </div>
+
+                    <div id="goalDisplay" class="form-row" style="margin-top: 8px; margin-bottom: 20px; font-size: 0.95em; display: none;">
+                        </div>
 
                     <div class="form-row">
                         <div class="form-group">

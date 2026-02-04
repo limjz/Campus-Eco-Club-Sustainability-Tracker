@@ -1,5 +1,4 @@
 <?php
-
 include __DIR__ . '/../db_connect.php'; 
 header('Content-Type: application/json');
 
@@ -51,10 +50,6 @@ $stmt_log->bind_param("ii", $points, $log_id);
 
 if ($stmt_log->execute()) {
 
-    // 5. STEP 2: THE BETTER ALTERNATIVE (Recalculate Total)
-    // Instead of "points + 10", we calculate the EXACT total from scratch.
-    // This fixes any previous errors automatically.
-    
     $sql_sync = "UPDATE users u
                  SET u.points = (
                      SELECT IFNULL(SUM(l.points_awarded), 0)
@@ -75,4 +70,72 @@ if ($stmt_log->execute()) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Database Error: ' . $conn->error]);
 }
+
+
+// ------------ Notification send after award a point ------------
+$stmt_sync->execute();
+
+$notif_title = "Log Approved";
+$notif_msg = "Your recycling log was approved! You earned $points points.";
+
+$sql_notif = "INSERT INTO notifications (user_id, title, message, is_read) VALUES (?, ?, ?, 0)";
+$stmt_notif = $conn->prepare($sql_notif);
+$stmt_notif->bind_param("iss", $user_id, $notif_title, $notif_msg);
+$stmt_notif->execute();
+
+echo json_encode([
+        'status' => 'success', 
+        'message' => "Verified! Awarded $points pts. Notification sent."
+    ]);
+
+
+// --------------- once the logs got approved, check the goal, if reach the goal then will close the events ---------- 
+
+// $event_target_goal = 50; 
+
+//get the specific event id 
+$check_event = $conn->query("SELECT event_id, target_goal FROM logs WHERE log_id = $log_id");
+$event_row = $check_event->fetch_assoc();
+$this_event_id = $event_row["event_id"]; // only grab the event_id 
+$event_target_goal = floatval($event_row['target_goal']);
+
+//total up the weight approved by admin for the specific event
+$sql_total = "SELECT SUM(weight) as total FROM logs WHERE event_id = $this_event_id AND status = 'approved'"; 
+$res_total = $conn->query($sql_total);
+$row_total = $res_total->fetch_assoc();
+$current_total_recycable = floatval($row_total["total"]);
+
+if ($current_total_recycable > $event_target_goal){ 
+
+    // event status: closed 
+    $conn->query("UPDATE events status = 'closed' WHERE event_id = $this_event_id");
+    //event name 
+    $event_title = $conn->query("SELECT title WHERE event_id = $this_event_id");
+
+    //notif all participants in the event 
+    $notif_title = "Event ($event_title) Goal Reached !!"; 
+    $notif_msg = "We hit our goal of $current_total_recycable kg ! The event now is closed, well done everyone";
+
+    // get all participants id 
+    $all_participant = $conn->query("SELECT user_id FROM regitrations WHERE event_id = $this_event_id");
+
+    if ($all_participant)
+    { 
+        $stmt_broadcast = $conn->prepare("INSERT INTO notifications (user_id, title, message, is_read) VALUES (?, ?, ?, 0)");
+        while ($p = $all_participant->fetch_assoc())
+        {
+            $uid = $p["user_id"];
+            $stmt_broadcast->bind_param("iss", $uid,$notif_title, $notif_msg);
+            $stmt_broadcast->execute(); 
+
+        }
+    
+    }
+}
+
+echo json_encode([
+        'status' => 'success', 
+        'message' => "Verified! Points awarded. (Total Event Weight: $current_total kg)"
+    ]);
+
 ?>

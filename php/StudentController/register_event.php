@@ -11,36 +11,49 @@ if(isset($_SESSION['user_id']) && isset($data->event_id) && isset($data->role))
 {    
     $studentID = $_SESSION['user_id'];
     $eventID = $data->event_id;
-    $role = $data->role; // 'Participant' or 'Volunteer'
+    $role =strtolower($data->role); // 'Participant' or 'Volunteer'
 
     // Check if already registered
-    $sql_check ="SELECT * FROM registrations WHERE user_id = '$studentID' AND event_id = '$eventID'";
-    $result_check = $conn->query($sql_check);
+    $stmt_check = $conn->prepare("SELECT registration_id FROM registrations WHERE user_id = ? AND event_id = ?");
+    $stmt_check->bind_param("ii", $studentID, $eventID);
+    $stmt_check->execute();
+    $result_check = $stmt_check->get_result();
 
 
     if($result_check->num_rows > 0) 
     {
         // return the error msg 
         echo json_encode(["status" => "error", "message" => "You are already registered!"]);
-        exit();
+        exit(); // stop the script here 
     } 
     else 
     {
         // register student // Insert into registrations table 
-        $sql = "INSERT INTO registrations (user_id, event_id, role) VALUES ('$studentID', '$eventID', '$role')";
-        
-        // msg display 
-        if($conn->query($sql) === TRUE) 
-        {
-            echo json_encode(["status" => "success", "message" => "Registered as " . $role]);
-        } 
+        $stmt_insert = $conn->prepare("INSERT INTO registrations (user_id, event_id, role) VALUES (?, ?, ?)");
+        $stmt_insert->bind_param("iis", $studentID);
+        if ($stmt_insert->execute())
+        { 
+            // after the students register, meaning the event is ongoing now, change the status from "open" to "ongoing"
+            $sql_update_status = "UPDATE events SET status = 'ongoing' WHERE event_id = ? AND status = 'open'";
+            $stmt_status = $conn->prepare($sql_update_status);
+            $stmt_status->bind_param("i", $event_id);
+            $stmt_status->execute();
+    
+            echo json_encode(['status' => 'success', 'message' => 'Registered successfully!']);
+
+        }
         else 
         {
-            echo json_encode(["status" => "error", "message" => "Database error"]);
+            echo json_encode(["status" => "error", "message" => "Invalid request or session expired."]);
         }
     }
     
 } 
+
+
+
+
+
 
 
 $conn->close();
