@@ -23,8 +23,8 @@ if (isset($_SESSION['user_id'])) {
         // default 50 just incase 
         $target_goal = isset($data->target_goal) ? floatval($data->target_goal) : 50.00;
 
-        $sql = "INSERT INTO proposals (title, description, target_goal, event_date, event_time, venue, organizer_id) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO proposals (title, event_date, event_time, venue, description, target_goal, organizer_id, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
         
         $stmt = $conn->prepare($sql);
         

@@ -126,7 +126,7 @@ include 'php/AdminController/get_admin_dashboard_statistic.php';
 
             <div class="panel">
                 <h3>Recycable Summary</h3>
-                <ul id="statsDescription">
+                <ul id="statsDescription" >
                     <li>Loading stats...</li>
                 </ul>
             </div>

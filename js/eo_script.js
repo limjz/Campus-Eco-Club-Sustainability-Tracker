@@ -82,8 +82,8 @@ function submitProposal (e) {
     // Gather data from the form or table
     const formData = {
         title: document.getElementById('propTitle').value,
-        date: document.getElementById('propDate').value,
-        time: document.getElementById('propTime').value,
+        event_date: document.getElementById('propDate').value,
+        event_time: document.getElementById('propTime').value,
         venue: document.getElementById('propVenue').value,
         description : document.getElementById('propDesc').value,
         target_goal: document.getElementById('target_goal').value 
@@ -140,6 +140,9 @@ function viewProposal (index){
     document.getElementById('viewTime').innerText = prop.event_time;
     document.getElementById('viewStatus').innerText = prop.status;
     
+    const goal = prop.target_goal || 50; 
+    document.getElementById('viewGoal').innerText = goal + " kg";
+
     // Check if these fields exist in the db, if not will display empty
     document.getElementById('viewVenue').innerText = prop.venue;
     document.getElementById('viewDesc').innerText = prop.description;
@@ -182,8 +185,9 @@ function editProposal(index) {
     const prop = allProposals[index];
     
     // check to prevent editing if it's already approved
-    if (prop.status.toLowerCase() === 'approved') {
-        alert("You cannot edit an approved event.");
+    const status = prop.status.toLowerCase().trim()
+    if (status === 'approved' || status === 'rejected') {
+        alert(`You cannot edit an ${status} event.`);
         return;
     }
 
@@ -194,6 +198,7 @@ function editProposal(index) {
     document.getElementById('propTime').value = prop.event_time;
     document.getElementById('propVenue').value = prop.venue;
     document.getElementById('propDesc').value = prop.description;
+    document.getElementById('target_goal').value = prop.target_goal || 50;
 
     //Change Button Text from "Submit" to "Update"
     const submitBtn = document.querySelector('#proposalForm button[type="submit"]');
@@ -251,12 +256,48 @@ let currentAttendees = []; // Store data globally for filtering
 function filterParticipants() {
     const eventID = document.getElementById('eventSelect').value; 
     const tbody = document.getElementById('volunteerTableBody');
+    const progressDiv = document.getElementById('taskProgressContainer');
 
     // Reset table if no event selected
     if (!eventID) {
         tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Please select an event.</td></tr>";
+        if(progressDiv) progressDiv.style.display = "none";
         return; 
     }
+
+    if(progressDiv) {
+        // Show loading state first
+        progressDiv.style.display = "block";
+        progressDiv.innerHTML = "<p>Loading progress...</p>";
+        
+        fetch(`php/EoController/get_event_progress.php?event_id=${eventID}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+
+                //html code for the progress check 
+                progressDiv.innerHTML = `
+                    <div style="background: #eef2f3; padding: 12px; border-radius: 5px; border-left: 5px solid #3498db;">
+                
+                        <p style="margin: 0 0 5px 0; font-weight: bold; color: #333; font-size: 1em;">
+                            Event Progress:
+                        </p>
+
+                        <span style="font-size: 1.1em; color: #2c3e50;">
+                            Goal: <strong>${data.goal}kg</strong> 
+                            &nbsp;|&nbsp; 
+                            Collected: <strong style="color: #27ae60;">${data.collected}kg</strong>
+                            &nbsp;|&nbsp; 
+                            Remaining: <strong style="color: #e67e22;">${data.remaining}kg</strong>
+                        </span>
+                    </div>
+                `;
+            }
+        })
+        .catch(err => console.error("Progress fetch error:", err));
+    }
+
+
 
     tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Loading...</td></tr>";
 
@@ -272,6 +313,10 @@ function filterParticipants() {
         tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>Error loading data.</td></tr>";
     });
 }
+
+
+
+
 
 //  Draw the table based on Checkboxes
 function renderTaskTable() {

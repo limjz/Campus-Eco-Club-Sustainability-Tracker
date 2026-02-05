@@ -61,7 +61,7 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
         
         <div id="dashboard" class="section active-section">
             <header>
-                <h1>Welcome, Organizer!</h1>
+                <h1>Welcome, <?php echo $_SESSION ['username'] ?></h1>
                 <p>Overview of your active eco-activities.</p>
             </header>
             <div class="cards-container">
@@ -126,7 +126,7 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                     
                     <div class="form-group">
                         <label>Recycling Goal (kg):</label>
-                        <input type="number" name="target_goal" step="0.1" min="1" placeholder="e.g. 50" required>
+                        <input type="number" id="target_goal" step="0.1" min="1" placeholder="e.g. 50" required>
                         <small>Event will auto-close when this amount is collected.</small>
                     </div>
 
@@ -189,6 +189,11 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                         <div id="viewDesc" class="description-box">
                             </div>
                     </div>
+
+                    <div class="detail-row" style="margin-top: 15px; display: flex; align-items: center; white-space: nowrap;">
+                        <span class="detail-label" style="min-width: 140px;">Recycling Goal:</span>
+                        <span id="viewGoal" class="detail-value" style=" font-weight: bold; color: #27ae60;"></span>
+                    </div>
                 </div>
 
                 <div style="margin-top: 20px; text-align: right;">
@@ -230,6 +235,9 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                             Show Participants
                         </label>
                     </div>
+                    <div id="taskProgressContainer" style="display: none; margin-bottom: 20px;">
+                        </div>
+
                 </div>
 
                 <table class="data-table">

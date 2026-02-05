@@ -384,7 +384,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .description-section {
-    margin-top: 25px;         /* Extra gap after the line and before description starts */
+    margin-top: 15px;         /* Extra gap after the line and before description starts */
 }
 
 .description-box {
@@ -393,6 +393,7 @@ input:focus, select:focus, textarea:focus {
     padding: 15px;            
     border-radius: 6px;        /* Rounded corners */
     margin-top: 8px;           /* Gap between "Description:" label and the box */
+    /* margin-bottom: 15px; */
     color: #333;
     line-height: 1.6;          /* Makes long text easier to read */
     min-height: 60px;

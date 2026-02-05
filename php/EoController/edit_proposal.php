@@ -19,19 +19,20 @@ $organizer_id = $_SESSION['user_id'];
 // 3. Extract Variables
 $proposal_id = $data['proposal_id'];
 $title = $data['title'];
-$date = $data['date'];
-$time = $data['time'];
+$date = $data['event_date'];
+$time = $data['event_time'];
 $venue = $data['venue'];
 $description = $data['description'];
+$target_goal = isset($data['target_goal']) ? floatval($data['target_goal']) : 50.00;
 
 // Update sql code
 // 'AND organizer_id = ?'to ensure only edit the logged in eo proposal 
 $sql = "UPDATE proposals 
-        SET title = ?, event_date = ?, event_time = ?, venue = ?, description = ? 
+        SET title = ?, event_date = ?, event_time = ?, venue = ?, description = ?, target_goal = ?
         WHERE proposal_id = ? AND organizer_id = ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssii", $title, $date, $time, $venue, $description, $proposal_id, $organizer_id);
+$stmt->bind_param("sssssdii", $title, $date, $time, $venue, $description, $target_goal, $proposal_id, $organizer_id);
 
 if ($stmt->execute()) {
     if ($stmt->affected_rows > 0) {
