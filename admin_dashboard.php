@@ -88,7 +88,7 @@ include 'php/AdminController/get_admin_dashboard_statistic.php';
                             <th>Proposed By (EO)</th>
                             <th>Date</th>
                             <th>Description</th>
-                            <!-- <th>Action</th> -->
+                            <th style="width: 30%;"> </th>
                         </tr>
                     </thead>
                     
@@ -108,7 +108,7 @@ include 'php/AdminController/get_admin_dashboard_statistic.php';
                             <th>Event</th>
                             <th>Claimed Activity</th>
                             <th>Proof</th>
-                            <!-- <th>Action</th> -->
+                            <th> </th>
                         </tr>
                     </thead>
                     <tbody id="logsTableBody">

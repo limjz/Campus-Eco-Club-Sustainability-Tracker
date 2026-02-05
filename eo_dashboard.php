@@ -143,7 +143,7 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                             <th>Title</th>
                             <th>Date</th>
                             <th>Status</th>
-                            <!-- <th>Action</th> -->
+                            <th> </th>
                         </tr>
                     </thead>
                     <tbody id="proposalTableBody">
@@ -234,11 +234,12 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                             <input type="checkbox" id="chkParticipant" checked onchange="renderTaskTable()" style="margin-right: 5px;"> 
                             Show Participants
                         </label>
-                    </div>
-                    <div id="taskProgressContainer" style="display: none; margin-bottom: 20px;">
-                        </div>
+                    </div>  
 
                 </div>
+                
+                <div id="taskProgressContainer" style="display: none; margin-bottom: 20px;">
+                        </div>
 
                 <table class="data-table">
                     <thead>
@@ -246,7 +247,7 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                             <th>Student Name</th>
                             <th style="width: 15%;">Role</th>
                             <th style="width: 45%;">Task / Instruction</th>
-                            <th style="width: 15%;">Action</th>
+                            <th style="width: 15%;"> </th>
                         </tr>
                     </thead>
                     <tbody id="volunteerTableBody">

@@ -117,7 +117,7 @@ include 'php/StudentController/get_student_dashboard_statistic.php';
                         <th>Event Name</th>
                         <th>Date</th>
                         <th>Venue</th>
-                        <th>Action</th>
+                        <th> </th>
                     </tr>
                 </thead>
                 <tbody id="eventListBody">
