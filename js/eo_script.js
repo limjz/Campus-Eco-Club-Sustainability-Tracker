@@ -42,6 +42,38 @@ function loadProposals () //Function to load data from php
 
         //loop thru every proposal 
         data.forEach((prop, index) => {
+
+
+            let actionButtons = '';
+
+            // 1. CHECK STATUS
+            if (prop.status === 'Approved' || prop.status === 'Rejected') {
+                
+            // CASE A: Read-Only (Only show 'View')
+            actionButtons = `
+                <button class="btn-primary" style="padding:5px 10px;" onclick="viewProposal(${index})">
+                    View
+                </button>
+            `;
+
+            } else {
+                
+                // CASE B: Editable (Show View, Delete, Edit) - Using your exact HTML
+                actionButtons = `
+                    <button class="btn-primary" style="padding:5px 10px;" onclick="viewProposal(${index})">
+                        View
+                    </button>
+
+                    <button class="btn-danger" style="padding:5px 10px;" onclick="deleteProposal(${index})">
+                        Delete
+                    </button>
+
+                    <button class="btn-primary" style="padding:5px 10px;" onclick="editProposal(${index})">
+                        Edit
+                    </button>
+                `;
+            }
+
             // Create the HTML row
             const row = `<tr>
                 <td>${prop.title}</td>
@@ -50,17 +82,7 @@ function loadProposals () //Function to load data from php
                     ${prop.status}
                 </span></td>
                 <td>
-                    <button class="btn-primary" style="padding:5px 10px;" onclick="viewProposal(${index})">
-                         View
-                    </button>
-
-                    <button class="btn-danger" style="padding:5px 10px;" onclick="deleteProposal(${prop.id})">
-                        Delete
-                    </button>
-
-                    <button class="btn-primary" style="padding:5px 10px;" onclick="editProposal(${index})">
-                        Edit
-                    </button>
+                    ${actionButtons}
                 </td>
                 
             </tr>`;
@@ -140,7 +162,7 @@ function viewProposal (index){
     document.getElementById('viewTime').innerText = prop.event_time;
     document.getElementById('viewStatus').innerText = prop.status;
     
-    const goal = prop.target_goal || 50; 
+    const goal = prop.target_goal; 
     document.getElementById('viewGoal').innerText = goal + " kg";
 
     // Check if these fields exist in the db, if not will display empty
@@ -153,7 +175,7 @@ function viewProposal (index){
 
 }
 
-function deleteProposal () { 
+function deleteProposal (id) { 
     if (!confirm("Are you sure you want to delete this proposal?")) {
         return;
     }
@@ -198,7 +220,7 @@ function editProposal(index) {
     document.getElementById('propTime').value = prop.event_time;
     document.getElementById('propVenue').value = prop.venue;
     document.getElementById('propDesc').value = prop.description;
-    document.getElementById('target_goal').value = prop.target_goal || 50;
+    document.getElementById('target_goal').value = prop.target_goal;
 
     //Change Button Text from "Submit" to "Update"
     const submitBtn = document.querySelector('#proposalForm button[type="submit"]');

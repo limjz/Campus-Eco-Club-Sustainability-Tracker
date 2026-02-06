@@ -313,21 +313,7 @@ include 'php/EoController/get_eo_dashboard_statistic.php';
                     </form>
                 </div>
 
-                <div class="panel">
-                    <h3>Inbox (System Alerts)</h3>
-                    <ul class="notif-list">
-                        <li class="notif-item unread">
-                            <strong>Admin</strong>
-                            <p>Your proposal "Park Cleanup" was Approved.</p>
-                            <span class="time">2 mins ago</span>
-                        </li>
-                        <li class="notif-item">
-                            <strong>System</strong>
-                            <p>Beach Cleanup target (500kg) reached!</p>
-                            <span class="time">1 hour ago</span>
-                        </li>
-                    </ul>
-                </div>
+                
             </div>
         </div>
 

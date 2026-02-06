@@ -9,7 +9,7 @@ if (!isset($conn) || $conn->connect_error) {
 }
 
 // join logs, users & events table 
-$sql = "SELECT l.log_id, l.weight, l.photo_evidence, 
+$sql = "SELECT l.log_id, l.weight, l.photo_evidence, l.category,
                u.username as student_name, e.title as event_title
         FROM logs l
         JOIN users u ON l.user_id = u.user_id

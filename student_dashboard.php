@@ -36,11 +36,14 @@ include 'php/StudentController/get_student_dashboard_statistic.php';
             <li onclick="showSection('notifications')" id="nav-notif"> 
                 <i class="fas fa-bell"></i> Notifications
             </li>
-            <li onclick="showSection('register')" id="nav-register"> 
+            <li onclick="showSection('join-event')" id="nav-join-event"> 
                 <i class="fas fa-calendar-plus"></i> Register Event
             </li>
             <li onclick="showSection('logs')" id="nav-logs"> 
                 <i class="fas fa-edit"></i> Submit Logs
+            </li>
+            <li onclick="showSection('volunteer-hub')" id="nav-volunteer"> 
+                <i class="fas fa-user-shield"></i> Volunteer Hub 
             </li>
             <li onclick="showSection('history')" id="nav-history"> 
                 <i class="fas fa-history"></i> My Logs History 
@@ -108,21 +111,46 @@ include 'php/StudentController/get_student_dashboard_statistic.php';
             </div>
         </div>
 
-        <div id="register" class="section">
-            <h2>Upcoming Events</h2>
-            <p>Select an event to join as a participant or volunteer.</p>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Event Name</th>
-                        <th>Date</th>
-                        <th>Venue</th>
-                        <th> </th>
-                    </tr>
-                </thead>
-                <tbody id="eventListBody">
-                    </tbody>
-            </table>
+        
+
+        <div id="join-event" class="section">
+            <header>
+                <h1>Event Registration</h1>
+                <p>Browse available events or check your registered activities.</p>
+            </header>
+
+            <div class="panel">
+                <h3> Available Events</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventListBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="panel" style="margin-top: 30px;">
+                <h3> My Registered Events</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>My Role</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myEventsBody">
+                        </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="logs" class="section">
@@ -158,6 +186,55 @@ include 'php/StudentController/get_student_dashboard_statistic.php';
 
                     <button type="submit" class="btn-primary">Submit Log</button>
                 </form>
+            </div>
+        </div>
+
+        <div id="volunteer-hub" class="section">
+            <header>
+                <h1>Volunteer Management Hub</h1>
+                <p>Monitor progress and activity for events where you are a Volunteer.</p>
+            </header>
+
+            <div class="panel">
+                <div class="form-group">
+                    <label>Select Event to Manage:</label>
+                    <select id="volunteerEventSelect" onchange="loadVolunteerDashboard()">
+                        <option value="">-- Select Event --</option>
+                    </select>
+                </div>
+
+                <div id="volProgressContainer" style="display:none; margin-top:20px;"></div>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                
+                <div class="panel" id="volParticipantsPanel" style="display:none; flex: 1; min-width: 300px;">
+                    <h3> Participant List</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="volParticipantsBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel" id="volLogsPanel" style="display:none; flex: 2; min-width: 400px;">
+                    <h3> Recent Submissions</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Item</th>
+                                <th>Weight</th>
+                                <th>Status</th>
+                                <th>Proof</th>
+                            </tr>
+                        </thead>
+                        <tbody id="volLogsBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

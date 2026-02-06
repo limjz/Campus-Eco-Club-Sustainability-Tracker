@@ -128,7 +128,7 @@ function loadPendingLogs() {
     tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>Loading logs...</td></tr>";
 
     fetch('php/AdminController/get_pending_logs.php')
-    .then(responseponseponse => responseponseponse.json())
+    .then(response => response.json())
     .then(data => {
         tbody.innerHTML = "";
 
@@ -147,7 +147,7 @@ function loadPendingLogs() {
             <tr id="log-${log.log_id}">
                 <td>${log.student_name}</td>
                 <td>${log.event_title}</td>
-                <td> Recycled <b>${log.weight}kg</b></td>
+                <td> Recycled ${log.category}: <b>${log.weight}kg</b></td>
                 <td>${evidenceLink}</td>
                 <td>
                     <button class="btn-primary" onclick="approveLog(${log.log_id})" style="background:#007bff; padding: 5px 10px;">
@@ -184,7 +184,11 @@ function approveLog(id) {
         method: 'POST',
         body: formData
     })
-    .then(responseponse => responseponse.json())
+    .then(response => response.text())
+    .then(text => {
+        console.log("RAW PHP RESPONSE:", text); // <--- Check this in Console!
+        return JSON.parse(text); // This will still fail, but you'll see why above
+    })
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);

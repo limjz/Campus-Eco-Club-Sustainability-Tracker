@@ -12,7 +12,7 @@ if ($organizer_id === 0) {
 
 
 //SQL Command to get everything
-$sql = "SELECT proposal_id, title, event_date, event_time, venue, status, description 
+$sql = "SELECT proposal_id, title, event_date, event_time, venue, status, description, target_goal 
         FROM proposals 
         WHERE organizer_id = ?"; 
 
@@ -39,7 +39,8 @@ while ($row = $result->fetch_assoc()) {
         
         'venue' => $row['venue'],
         'status' => ucfirst($row['status']), //capitalize the first letter 
-        'description' => $row['description'] ?? "No description provided."
+        'description' => $row['description'] ?? "No description provided.",
+        'target_goal' => $row['target_goal'] ?? "No goal set"
     ];
 }
 
