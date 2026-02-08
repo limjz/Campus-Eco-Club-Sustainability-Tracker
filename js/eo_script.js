@@ -32,6 +32,7 @@ function loadProposals () //Function to load data from php
     fetch('php/EoController/get_proposals.php')
     .then(response => response.json()) // Convert text to JSON
     .then(data => {
+
         allProposals = data; // save the data into the arrays for display purpose in view button
         tbody.innerHTML = ""; // Clear the "Loading..." text
 
@@ -64,7 +65,7 @@ function loadProposals () //Function to load data from php
                         View
                     </button>
 
-                    <button class="btn-danger" style="padding:5px 10px;" onclick="deleteProposal(${index})">
+                    <button class="btn-danger" style="padding:5px 10px;" onclick="deleteProposal(${prop.id})">
                         Delete
                     </button>
 
@@ -175,30 +176,32 @@ function viewProposal (index){
 
 }
 
-function deleteProposal (id) { 
-    if (!confirm("Are you sure you want to delete this proposal?")) {
+function deleteProposal(id) {
+    alert("Debug: Deleting Proposal ID: " + id); 
+
+    if (!id || id === undefined) {
+        alert("Error: ID is missing! Check your loadProposals loop.");
         return;
     }
 
-    fetch('php/EoController/delete_proposal.php', {
+    if (!confirm("Are you sure you want to delete this proposal?")) return;
+
+    fetch('php/EOController/delete_proposal.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ proposal_id: id })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === "success") {
+        if (data.status === 'success') {
             alert(data.message);
-            loadProposals(); // Refresh the table, the original proposal will gone 
+            loadProposals(); 
         } else {
-            alert("Error: " + data.message);
+            // This will show us the PHP error (e.g., "Proposal not found")
+            alert("PHP Error: " + data.message); 
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Something went wrong deleting the proposal.");
-    });
-
+    .catch(error => console.error('Error:', error));
 }
 
 
@@ -479,7 +482,7 @@ function sendNotification(e) {
     const eventId = document.getElementById('notifEventSelect').value;
     const title = document.getElementById('notifTitle').value;
     const message = document.getElementById('notifMessage').value;
-    const form = document.getElementById('notifForm');
+    const form  = e.target;
 
    // make sure all the field have been filled in 
     if (!eventId || !title || !message) {

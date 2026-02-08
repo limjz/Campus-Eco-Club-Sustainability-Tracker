@@ -391,7 +391,7 @@ function loadVolunteerDashboard() {
             } else {
                 data.participants.forEach(p => {
                     
-                    // ✅ LOGIC: Determine Icon & Color based on Role
+                    // Determine Icon & Color based on Role
                     let roleBadge = '';
                     
                     // Normalize role string (handle lowercase/uppercase)
@@ -400,7 +400,7 @@ function loadVolunteerDashboard() {
 
                     if (role === 'volunteer') {
                         // Gold Icon + Label
-                        roleBadge = `<span style="color:#f39c12; font-weight:bold; font-size:0.9em; margin-left:8px;">
+                        roleBadge = `<span style="color:#f39c12; font-size:0.9em; margin-left:8px;">
                                         <i class="fas fa-user-shield"></i> (Volunteer)
                                     </span>`;
                     } else {

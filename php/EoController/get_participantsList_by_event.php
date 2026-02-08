@@ -1,5 +1,4 @@
 <?php
-// FILE: php/EoController/get_participantsList_by_event.php
 include __DIR__ . '/../db_connect.php'; 
 header ('Content-Type: application/json');
 

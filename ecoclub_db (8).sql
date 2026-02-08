@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 06, 2026 at 06:28 PM
+-- Generation Time: Feb 08, 2026 at 09:47 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,7 +47,9 @@ INSERT INTO `events` (`event_id`, `title`, `description`, `target_goal`, `event_
 (1, 'Beach Cleanup', NULL, 50.00, '2026-05-20', NULL, NULL, 'closed', 4),
 (2, 'Campus Recycling Awareness Campaign', 'This event is to raise the awarness of student about the importance of recycling !!', 50.00, '2026-02-12', '00:55:00', 'MPH', 'ongoing', 4),
 (3, 'Campus Stray Cats Shelter', 'Build the campus kitty a shelter', 50.00, '2026-03-02', '14:00:00', 'MMU Land ', 'ongoing', 5),
-(4, 'Green Collect Recycling Initiative', 'This initiative focuses on collecting recyclable materials to minimize waste and support a cleaner, more sustainable campus environment.', 15.00, '2026-02-07', '17:03:00', 'MMU Land ', 'ongoing', 5);
+(4, 'Green Collect Recycling Initiative', 'This initiative focuses on collecting recyclable materials to minimize waste and support a cleaner, more sustainable campus environment.', 15.00, '2026-02-07', '17:03:00', 'MMU Land ', 'ongoing', 5),
+(5, 'hahahah', 'LALALAL', 10.00, '2026-02-07', '00:25:00', 'DTC', 'closed', 4),
+(6, 'YAYAYA', 'YADADA', 10.00, '2026-02-07', '10:47:00', 'DTC', 'closed', 4);
 
 -- --------------------------------------------------------
 
@@ -83,7 +85,12 @@ INSERT INTO `logs` (`log_id`, `user_id`, `event_id`, `category`, `weight`, `phot
 (11, 1, 1, 'Glass', 11.00, 'uploads/1770367353_1.png', 'approved', '2026-02-06 08:42:33', 11),
 (12, 6, 4, 'Glass', 10.00, 'uploads/1770397639_6.png', 'rejected', '2026-02-06 17:07:19', NULL),
 (13, 6, 4, 'Glass', 7.00, 'uploads/1770397685_6.png', 'approved', '2026-02-06 17:08:05', 7),
-(14, 2, 4, 'Aluminium', 5.00, 'uploads/1770398268_2.png', 'pending', '2026-02-06 17:17:48', NULL);
+(14, 2, 4, 'Aluminium', 5.00, 'uploads/1770398268_2.png', 'pending', '2026-02-06 17:17:48', NULL),
+(15, 2, 5, 'Plastic', 8.00, 'uploads/1770431627_2.jpg', 'approved', '2026-02-07 02:33:47', 8),
+(16, 2, 5, 'cardboard', 1.00, 'uploads/1770431778_2.jpg', 'approved', '2026-02-07 02:36:18', 1),
+(17, 6, 5, 'Tin', 1.00, 'uploads/1770432207_6.jpg', 'approved', '2026-02-07 02:43:27', 1),
+(18, 2, 6, 'battery', 8.00, 'uploads/1770432732_2.jpg', 'approved', '2026-02-07 02:52:12', 8),
+(19, 6, 6, 'Plastic', 2.00, 'uploads/1770432997_6.jpg', 'approved', '2026-02-07 02:56:37', 2);
 
 -- --------------------------------------------------------
 
@@ -117,7 +124,18 @@ INSERT INTO `notifications` (`notif_id`, `user_id`, `title`, `message`, `is_read
 (15, 1, 'Log Approved', 'Your recycling log was approved! You earned 11 points.', 1, '2026-02-06 17:14:58'),
 (16, 1, 'Event Goal Reached! ', 'We hit our goal of 50 kg for \'Beach Cleanup\'! The event is now closed.', 1, '2026-02-06 17:14:58'),
 (17, 2, 'Event Goal Reached! ', 'We hit our goal of 50 kg for \'Beach Cleanup\'! The event is now closed.', 1, '2026-02-06 17:14:58'),
-(18, 6, 'Event Goal Reached! ', 'We hit our goal of 50 kg for \'Beach Cleanup\'! The event is now closed.', 1, '2026-02-06 17:14:58');
+(18, 6, 'Event Goal Reached! ', 'We hit our goal of 50 kg for \'Beach Cleanup\'! The event is now closed.', 1, '2026-02-06 17:14:58'),
+(19, 2, 'URGENT URGENT', 'URGENT DO SMTG', 1, '2026-02-07 02:30:21'),
+(20, 2, 'Log Approved', 'Your recycling log was approved! You earned 8 points.', 1, '2026-02-07 02:34:47'),
+(21, 2, 'Log Approved', 'Your recycling log was approved! You earned 1 points.', 1, '2026-02-07 02:36:27'),
+(22, 6, 'Log Approved', 'Your recycling log was approved! You earned 1 points.', 1, '2026-02-07 02:43:35'),
+(23, 2, 'Event Goal Reached! ', 'We hit our goal of 10 kg for \'hahahah\'! The event is now closed.', 1, '2026-02-07 02:43:35'),
+(24, 6, 'Event Goal Reached! ', 'We hit our goal of 10 kg for \'hahahah\'! The event is now closed.', 1, '2026-02-07 02:43:35'),
+(25, 2, 'HELPPPP ', 'help me to solve this ', 1, '2026-02-07 02:51:00'),
+(26, 2, 'Log Approved', 'Your recycling log was approved! You earned 8 points.', 1, '2026-02-07 02:53:04'),
+(27, 6, 'Log Approved', 'Your recycling log was approved! You earned 2 points.', 1, '2026-02-07 02:56:55'),
+(28, 2, 'Event Goal Reached! ', 'We hit our goal of 10 kg for \'YAYAYA\'! The event is now closed.', 1, '2026-02-07 02:56:55'),
+(29, 6, 'Event Goal Reached! ', 'We hit our goal of 10 kg for \'YAYAYA\'! The event is now closed.', 1, '2026-02-07 02:56:55');
 
 -- --------------------------------------------------------
 
@@ -146,7 +164,9 @@ INSERT INTO `proposals` (`proposal_id`, `title`, `event_date`, `event_time`, `ve
 (2, 'LakeSide cleanup ', '2026-02-18', '23:14:00', 'Cyberjaya lake', 'Help to provide a clean and comfort to the people who do exercise there', 50.00, 4, 'Rejected'),
 (3, 'Campus Stray Cats Shelter', '2026-03-02', '14:00:00', 'MMU Land ', 'Build the campus kitty a shelter', 50.00, 5, 'Approved'),
 (5, 'Clean-up Drives', '2026-02-16', '04:48:00', 'MPH', 'The Campus Clean-Up Drive helps keep the campus clean while promoting environmental awareness and sustainability.', 10.00, 4, 'pending'),
-(6, 'Green Collect Recycling Initiative', '2026-02-07', '17:03:00', 'MMU Land ', 'This initiative focuses on collecting recyclable materials to minimize waste and support a cleaner, more sustainable campus environment.', 15.00, 5, 'Approved');
+(6, 'Green Collect Recycling Initiative', '2026-02-07', '17:03:00', 'MMU Land ', 'This initiative focuses on collecting recyclable materials to minimize waste and support a cleaner, more sustainable campus environment.', 15.00, 5, 'Approved'),
+(11, 'hahahah', '2026-02-07', '00:25:00', 'DTC', 'LALALAL', 10.00, 4, 'Approved'),
+(13, 'YAYAYA', '2026-02-07', '10:47:00', 'DTC', 'YADADA', 10.00, 4, 'Approved');
 
 -- --------------------------------------------------------
 
@@ -177,7 +197,11 @@ INSERT INTO `registrations` (`registration_id`, `event_id`, `user_id`, `role`, `
 (7, 2, 6, 'participant', '2026-02-06 16:10:26', NULL),
 (8, 3, 2, 'volunteer', '2026-02-06 16:23:20', 'Bring all the cat food tin to recycle'),
 (9, 4, 6, 'volunteer', '2026-02-06 17:06:37', 'DO SOMETHING'),
-(10, 4, 2, 'participant', '2026-02-06 17:17:13', NULL);
+(10, 4, 2, 'participant', '2026-02-06 17:17:13', NULL),
+(11, 5, 2, 'participant', '2026-02-07 02:28:21', 'DO SMTG'),
+(12, 5, 6, 'volunteer', '2026-02-07 02:39:28', NULL),
+(13, 6, 2, 'participant', '2026-02-07 02:49:34', 'HELP ME'),
+(14, 6, 6, 'volunteer', '2026-02-07 02:55:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -200,11 +224,11 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `role`, `points`) VALUES
 (1, 'Ali', '123', 'ali@test.com', 'student', 31),
-(2, 'khoo', '123', 'khoo@gmail.com', 'student', 29),
+(2, 'khoo', '123', 'khoo@gmail.com', 'student', 46),
 (3, 'ilie', '123', 'ilie@gmail.com', 'admin', 0),
 (4, 'cincau', '123', 'cincau@gmail.com', 'eo', 0),
 (5, 'Heng', '123', 'heng@gmail.com', 'eo', 0),
-(6, 'taru', '123', 'nadi@gmail.com', 'student', 7);
+(6, 'taru', '123', 'nadi@gmail.com', 'student', 10);
 
 --
 -- Indexes for dumped tables
@@ -262,31 +286,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notif_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `notif_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `proposals`
 --
 ALTER TABLE `proposals`
-  MODIFY `proposal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `proposal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `registrations`
 --
 ALTER TABLE `registrations`
-  MODIFY `registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`
